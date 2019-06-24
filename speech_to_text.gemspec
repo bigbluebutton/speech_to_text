@@ -1,17 +1,17 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "speech2text/version"
+require "speech_to_text/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "speech2text"
-  spec.version       = Speech2text::VERSION
+  spec.name          = "speech_to_text"
+  spec.version       = SpeechToText::VERSION
   spec.authors       = ["Richard Alam"]
   spec.email         = ["ritzalam@gmail.com"]
 
   spec.summary       = %q{speech to text using different services}
   #spec.description   = %q{speech to text using google and ibm}
-  spec.homepage      = "https://github.com/bigbluebutton/speech2text"
+  spec.homepage      = "https://github.com/bigbluebutton/speech_to_text"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
     spec.metadata["allowed_push_host"] = "Set to 'http://droplet-949.meetbbb.com'"
 
     spec.metadata["homepage_uri"] = spec.homepage
-    spec.metadata["source_code_uri"] = "https://github.com/bigbluebutton/speech2text.git"
+    spec.metadata["source_code_uri"] = "https://github.com/bigbluebutton/speech_to_text.git"
     spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
   else
     raise "RubyGems 2.0 or newer is required to protect against " \

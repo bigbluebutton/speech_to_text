@@ -7,7 +7,7 @@
 # Copyright (c) 2019 BigBlueButton Inc. and by respective authors (see below).
 #
 
-module Speech2Text
+module SpeechToText
 	module Util
 		#function to convert the time to a timestamp
 		def self.seconds_to_timestamp number

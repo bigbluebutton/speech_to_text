@@ -7,7 +7,7 @@
 #
 require_relative "util.rb"
 
-module Speech2Text
+module SpeechToText
 	module BBBIbmCaptions
 		include Util
 		#create array from json file
@@ -41,7 +41,7 @@ module Speech2Text
 		end
 
 		#ibm speech to text main function
-		def self.ibm_speech2text(published_files,recordID,apikey)
+		def self.ibm_speech_to_text(published_files,recordID,apikey)
 			require 'json'
 		  jsonfile_path = "#{published_files}/#{recordID}/audio.json"
 		  Util.video_to_audio(published_files,recordID)

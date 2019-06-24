@@ -7,7 +7,7 @@
 #
 require_relative "util.rb"
 
-module Speech2Text
+module SpeechToText
 	module BBBDeepspeech
     include Util
 

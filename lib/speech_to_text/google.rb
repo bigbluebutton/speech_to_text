@@ -8,7 +8,7 @@
 #
 require_relative "util.rb"
 
-module Speech2Text
+module SpeechToText
 	module BBBGoogleCaptions
 		require "google/cloud/speech"
 		require "google/cloud/storage"
@@ -68,7 +68,7 @@ module Speech2Text
 		end
 
 		#Google-speech-to-text function
-		def self.google_speech2text(published_files,recordID,auth_file,bucket_name)
+		def self.google_speech_to_text(published_files,recordID,auth_file,bucket_name)
 			ENV['GOOGLE_APPLICATION_CREDENTIALS'] = auth_file
 		  Util.video_to_audio(published_files,recordID)
 		  file = google_storage(published_files,recordID,bucket_name)

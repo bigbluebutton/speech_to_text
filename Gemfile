@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in speech2text.gemspec
+# Specify your gem's dependencies in speech_to_text.gemspec
 gemspec
 
 gem 'google-cloud-storage'

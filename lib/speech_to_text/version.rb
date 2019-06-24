@@ -1,3 +1,3 @@
-module Speech2text
+module SpeechToText
   VERSION = "0.1.0"
 end
