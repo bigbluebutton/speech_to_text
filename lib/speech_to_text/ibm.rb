@@ -50,7 +50,8 @@ module SpeechToText
 		  data = JSON.load out
 		  myarray = create_array_watson data
 		  Util.write_to_webvtt(published_files,recordID,myarray)
-			out.delete
+			out.close
+			File.delete(jsonfile_path)
 		end
 	end
 end

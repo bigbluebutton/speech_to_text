@@ -39,7 +39,7 @@ published_files_path/recordID/video
 where published_files_path could be any path
 and recordID should be inside the published_files_path.
 Your recordID folder will contain "video" folder which has video.mp4 file inside "video" folder.
-Full videopath: <published_files_path>/<recordID>/video/video.mp4
+Full videopath: <published_files_path>/ <recordID> /video/video.mp4
 
 ## Development
 
