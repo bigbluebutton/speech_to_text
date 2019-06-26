@@ -22,15 +22,23 @@ Or install it yourself as:
 ## Usage
 BigBlueButton provides various captions services.
 Use following command to access the different services.
+You have to convert video to audio using following command
 ```ruby
-SpeechToText::BBBIbmCaptions.ibm_speech_to_text(<published_files_path>,<recordID>,<apikey>)
-SpeechToText::BBBGoogleCaptions.google_speech_to_text(<published_files>,<recordID>,<auth_file>,<bucket_name>)
+SpeechToText::Util.video_to_audio(published_files,recordID)
+```
+Then based on the service you can execute one of the following command.
+
+```ruby
+SpeechToText::IbmWatsonS2T.ibm_speech_to_text(<published_files_path>,<recordID>,<apikey>)
+SpeechToText::GoogleS2T.google_speech_to_text(<published_files>,<recordID>,<auth_file>,<bucket_name>)
 ```
 
 NOTE:
 you can use this gemfile only if you have following directory structure.
-<published_files_path>/<recordID>/video    where <published_files_path> could be any path and <recordID> should be inside the <published_files_path>.
-Your <recordID> folder will contain "video" folder which has video.mp4 or video.webm file inside "video" folder.
+<published_files_path>/<recordID>/video
+where <published_files_path> could be any path
+and <recordID> should be inside the <published_files_path>.
+Your <recordID> folder will contain "video" folder which has video.mp4 file inside "video" folder.
 
 ## Development
 

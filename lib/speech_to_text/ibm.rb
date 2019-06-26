@@ -8,7 +8,7 @@
 require_relative "util.rb"
 
 module SpeechToText
-	module BBBIbmCaptions
+	module IbmWatsonS2T
 		include Util
 		#create array from json file
 		def self.create_array_watson data
@@ -43,14 +43,14 @@ module SpeechToText
 		#ibm speech to text main function
 		def self.ibm_speech_to_text(published_files,recordID,apikey)
 			require 'json'
-		  jsonfile_path = "#{published_files}/#{recordID}/audio.json"
-		  Util.video_to_audio(published_files,recordID)
+		  jsonfile_path = "#{published_files}/#{recordID}/#{recordID}.json"
 		  watson_command = "curl -X POST -u \"apikey:#{apikey}\" --header \"Content-Type: audio/flac\" --data-binary @#{published_files}/#{recordID}/#{recordID}.flac \"https://stream.watsonplatform.net/speech-to-text/api/v1/recognize?timestamps=true\" > #{jsonfile_path}"
 		  system("#{watson_command}")
 		  out = File.open(jsonfile_path, "r")
 		  data = JSON.load out
 		  myarray = create_array_watson data
 		  Util.write_to_webvtt(published_files,recordID,myarray)
+			out.delete
 		end
 	end
 end
