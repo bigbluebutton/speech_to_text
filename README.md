@@ -39,16 +39,16 @@ Then based on the service you can execute one of the following command.
 ```ruby
 SpeechToText::IbmWatsonS2T.ibm_speech_to_text(published_files_path, recordID, apikey)
 SpeechToText::GoogleS2T.google_speech_to_text(published_files, recordID, auth_file, bucket_name)
-SpeechToText::MozillaDeepspeechS2T.mozilla_speech_to_text(published_files,recordID)
+SpeechToText::MozillaDeepspeechS2T.mozilla_speech_to_text(published_files,recordID,model_path)
 ```
 
 NOTE:
 you can use this gemfile only if you have following directory structure.
-published_files_path/recordID/video
+{published_files_path}/{recordID}/video
 where published_files_path could be any path
-and recordID should be inside the published_files_path.
+and recordID could be any folder and should be inside the published_files_path.
 Your recordID folder will contain "video" folder which has video.mp4 file inside "video" folder.
-Full videopath: <published_files_path>/ <recordID> /video/video.mp4
+Full videopath: {published_files_path}/{recordID}/video/video.mp4
 
 ## Development
 
