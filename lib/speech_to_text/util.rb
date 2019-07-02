@@ -86,5 +86,9 @@ module SpeechToText
 		  system("#{video_to_audio_command}")
 		end
 
+		def self.deepspeech_video_to_audio(published_files,recordID)
+			video_to_audio_command = "ffmpeg -i #{published_files}/#{recordID}/video/video.mp4 -ac 1 -ar 16000 #{published_files}/#{recordID}/#{recordID}.wav"
+		  system("#{video_to_audio_command}")
+		end
 	end
 end
