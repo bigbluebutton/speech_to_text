@@ -24,22 +24,35 @@ BigBlueButton provides various captions services.
 Use following command to access the different services.
 You have to convert video to audio using following command
 
-Google and IBM
 ```ruby
-SpeechToText::Util.video_to_audio(published_files,recordID)
+SpeechToText::Util.video_to_audio(published_files,recordID,service)
 ```
+where
+published_files = <path to your published files>
+recordID = <your recordID folder> (should be inside published_files)
+service = <google or ibm or mozilla_deepspeech or speechmatics>
 
-Mozila
-```ruby
-SpeechToText::Util.mozilla_video_to_audio(published_files,recordID)
-```
 
 Then based on the service you can execute one of the following command.
 
+if service = ibm
 ```ruby
 SpeechToText::IbmWatsonS2T.ibm_speech_to_text(published_files_path, recordID, apikey)
+```
+
+if service = google
+```ruby
 SpeechToText::GoogleS2T.google_speech_to_text(published_files, recordID, auth_file, bucket_name)
+```
+
+if service = mozilla_deepspeech
+```ruby
 SpeechToText::MozillaDeepspeechS2T.mozilla_speech_to_text(published_files,recordID,model_path)
+```
+
+if service = speechmatics
+```ruby
+SpeechToText::SpeechmaticsS2T.speechmatics_speech_to_text(published_files,recordID,userID, apiKey)
 ```
 
 NOTE:
