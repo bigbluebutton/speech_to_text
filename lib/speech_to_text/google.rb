@@ -9,7 +9,7 @@
 require_relative "util.rb"
 
 module SpeechToText
-	module BBBGoogleCaptions
+	module GoogleS2T
 		require "google/cloud/speech"
 		require "google/cloud/storage"
 		include Util
@@ -70,10 +70,8 @@ module SpeechToText
 		#Google-speech-to-text function
 		def self.google_speech_to_text(published_files,recordID,auth_file,bucket_name)
 			ENV['GOOGLE_APPLICATION_CREDENTIALS'] = auth_file
-		  Util.video_to_audio(published_files,recordID)
 		  file = google_storage(published_files,recordID,bucket_name)
 		  results = google_transcription(recordID,bucket_name)
-
 		  data_array = create_array_google(results)
 		  Util.write_to_webvtt(published_files,recordID,data_array)
 			file.delete

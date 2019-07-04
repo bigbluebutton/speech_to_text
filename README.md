@@ -22,15 +22,33 @@ Or install it yourself as:
 ## Usage
 BigBlueButton provides various captions services.
 Use following command to access the different services.
+You have to convert video to audio using following command
+
+Google and IBM
 ```ruby
-SpeechToText::BBBIbmCaptions.ibm_speech_to_text(<published_files_path>,<recordID>,<apikey>)
-SpeechToText::BBBGoogleCaptions.google_speech_to_text(<published_files>,<recordID>,<auth_file>,<bucket_name>)
+SpeechToText::Util.video_to_audio(published_files,recordID)
+```
+
+Mozila
+```ruby
+SpeechToText::Util.mozilla_video_to_audio(published_files,recordID)
+```
+
+Then based on the service you can execute one of the following command.
+
+```ruby
+SpeechToText::IbmWatsonS2T.ibm_speech_to_text(published_files_path, recordID, apikey)
+SpeechToText::GoogleS2T.google_speech_to_text(published_files, recordID, auth_file, bucket_name)
+SpeechToText::MozillaDeepspeechS2T.mozilla_speech_to_text(published_files,recordID,model_path)
 ```
 
 NOTE:
 you can use this gemfile only if you have following directory structure.
-<published_files_path>/<recordID>/video    where <published_files_path> could be any path and <recordID> should be inside the <published_files_path>.
-Your <recordID> folder will contain "video" folder which has video.mp4 or video.webm file inside "video" folder.
+{published_files_path}/{recordID}/video
+where published_files_path could be any path
+and recordID could be any folder and should be inside the published_files_path.
+Your recordID folder will contain "video" folder which has video.mp4 file inside "video" folder.
+Full videopath: {published_files_path}/{recordID}/video/video.mp4
 
 ## Development
 
@@ -40,8 +58,8 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 NOTE : After your changes execute this commands
 1. Build your gem file : 'gem build speech_to_text.gemspec'
-2. Install your gem file : 'gem install speech_to_text-0.1.0.gem'                  //replace the version number
-3. 'bundle install'                                                             //optional command
+2. Install your gem file : 'gem install speech_to_text-0.1.1.gem'                  //replace the version number
+3. 'bundle install'                                                                //optional command
 
 ## Contributing
 
