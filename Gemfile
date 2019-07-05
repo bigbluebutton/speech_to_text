@@ -5,3 +5,4 @@ gemspec
 
 gem 'google-cloud-storage'
 gem 'google-cloud-speech'
+gem 'ibm_watson'
