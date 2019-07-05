@@ -49,7 +49,7 @@ file = google_storage(audio_file, dest_file, bucket_name)
 #results = google_transcription(bucket_name, dest_file)
 #puts results
 
-speech = Google::Cloud::Speech.new
+speech = Google::Cloud::Speech.new(version: :v1p1beta1)
 
 	# The audio file's encoding and sample rate
 	config = {
@@ -80,15 +80,15 @@ puts op.name
 #id = op.id #=> "1234567890"
 
 # construct a new operation object from the id
-op2 = speech.operation op.name
+op2 = speech.get_operation  op.name
 
 # verify the jobs are the same
 #op.id == op2.id #=> true
 
-#op2.done? #=> false
-#op2.wait_until_done!
-#op2.done? #=> true
+puts op2.done? #=> false
+op2.wait_until_done!
+puts op2.done? #=> true
 
-#results = op2.results
+puts op2.results
 
 file.delete
