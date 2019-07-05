@@ -81,14 +81,19 @@ module SpeechToText
 		end
 
 		#def video_to_audio
-		def self.video_to_audio(published_files,recordID)
-		  video_to_audio_command = "ffmpeg -i #{published_files}/#{recordID}/video/video.mp4 -ac 1 -ar 16000 #{published_files}/#{recordID}/#{recordID}.flac"
-		  system("#{video_to_audio_command}")
-		end
-
-		def self.deepspeech_video_to_audio(published_files,recordID)
-			video_to_audio_command = "ffmpeg -i #{published_files}/#{recordID}/video/video.mp4 -ac 1 -ar 16000 #{published_files}/#{recordID}/#{recordID}.wav"
-		  system("#{video_to_audio_command}")
+		def self.video_to_audio(published_files,recordID,service)
+			if service == "google" || service == "ibm"
+			  video_to_audio_command = "ffmpeg -i #{published_files}/#{recordID}/video/video.mp4 -ac 1 -ar 16000 #{published_files}/#{recordID}/#{recordID}.flac"
+			  system("#{video_to_audio_command}")
+			elsif service == "mozilla_deepspeech"
+					video_to_audio_command = "ffmpeg -i #{published_files}/#{recordID}/video/video.mp4 -ac 1 -ar 16000 #{published_files}/#{recordID}/#{recordID}.wav"
+					system("#{video_to_audio_command}")
+				elsif service == "speechmatics"
+					video_to_audio_command = "ffmpeg -i #{published_files}/#{recordID}/video/video.mp4 #{published_files}/#{recordID}/#{recordID}.mp3"
+				  system("#{video_to_audio_command}")
+				else
+					puts "No service found....."
+			end
 		end
 	end
 end
