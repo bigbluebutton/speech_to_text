@@ -35,9 +35,13 @@ service = <google or ibm or mozilla_deepspeech or speechmatics>
 
 Then based on the service you can execute one of the following command.
 
-if service = ibm
+if service = ibm, execute following commands
+
 ```ruby
-SpeechToText::IbmWatsonS2T.ibm_speech_to_text(published_files_path, recordID, apikey)
+params = SpeechToText::IbmWatsonS2T.create_job(published_files,recordID,apiKey)
+data = SpeechToText::IbmWatsonS2T.check_job(params)
+myarray = SpeechToText::IbmWatsonS2T.create_array_watson(data["results"][0])
+SpeechToText::Util.write_to_webvtt(published_files,recordID,myarray)
 ```
 
 if service = google

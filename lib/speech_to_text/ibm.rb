@@ -29,12 +29,10 @@ module SpeechToText
 	    status = "processing"
 			speech_to_text = params[0]
 			job_id = params[1]
-	    while(status != "completed")
-	      service_response = speech_to_text.check_job(id: job_id)
-	      status = service_response.result["status"]
-	      sleep 10
-	    end
-			return service_response.result["results"][0]
+      service_response = speech_to_text.check_job(id: job_id)
+			return service_response.result
+			#To create watson array pass service_response.result["results"][0] as argument as shown below
+			#myarray = create_array_watson service_response.result["results"][0]
 	  end
 
 		#create array from json file
@@ -65,14 +63,6 @@ module SpeechToText
 		  k+=1
 		  end
 		  return myarray
-		end
-
-		#ibm speech to text main function
-		def self.ibm_speech_to_text(published_files,recordID,apikey)
-			params = create_job(published_files,recordID,apikey)
-			data = check_job(params)
-			myarray = create_array_watson data
-		  Util.write_to_webvtt(published_files,recordID,myarray)
 		end
 	end
 end
