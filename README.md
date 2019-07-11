@@ -38,8 +38,8 @@ Then based on the service you can execute one of the following command.
 if service = ibm, execute following commands
 
 ```ruby
-params = SpeechToText::IbmWatsonS2T.create_job(published_files,recordID,apiKey)
-data = SpeechToText::IbmWatsonS2T.check_job(params)
+job_id = SpeechToText::IbmWatsonS2T.create_job(published_files,recordID,apikey)
+data = SpeechToText::IbmWatsonS2T.check_job(job_id,apikey)
 myarray = SpeechToText::IbmWatsonS2T.create_array_watson(data["results"][0])
 SpeechToText::Util.write_to_webvtt(published_files,recordID,myarray)
 ```
@@ -54,8 +54,8 @@ After setting environment, execute following commands to get google transcriptio
 
 ```ruby
 file = SpeechToText::GoogleS2T.google_storage("published_file","recordID","bucket_name")
-params = SpeechToText::GoogleS2T.create_job("recordID","bucket_name")
-data = SpeechToText::GoogleS2T.check_job(params)
+operation_name = SpeechToText::GoogleS2T.create_job("recordID","bucket_name")
+data = SpeechToText::GoogleS2T.check_job(operation_name)
 myarray = SpeechToText::GoogleS2T.create_array_google(data["results"])
 SpeechToText::Util.write_to_webvtt("published_file","recordID",myarray)
 file.delete

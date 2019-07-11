@@ -20,17 +20,17 @@ module SpeechToText
 	    audio_file = File.open("#{published_files}/#{recordID}/#{recordID}.flac")
 	    service_response = speech_to_text.create_job(audio: audio_file,content_type: "audio/flac", timestamps: true)
 	    job_id = service_response.result["id"]
-	    return speech_to_text,job_id
+	    return job_id
 	  end
 
 		#functions checks the status of specific jobid
 		#pass array of 2 variables as argumanet [IBMWatson::SpeechToTextV1 object, jobid]
-	  def self.check_job(params)
+	  def self.check_job(job_id,apikey)
 	    status = "processing"
-			speech_to_text = params[0]
-			job_id = params[1]
+			speech_to_text = IBMWatson::SpeechToTextV1.new(iam_apikey: apikey)
       service_response = speech_to_text.check_job(id: job_id)
 			return service_response.result
+
 			#To create watson array pass service_response.result["results"][0] as argument as shown below
 			#myarray = create_array_watson service_response.result["results"][0]
 	  end

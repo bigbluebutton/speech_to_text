@@ -31,7 +31,7 @@ module SpeechToText
   		return data_array
 		end
 
-		#uploads audio file to a google bucket
+		#set environment for worker
 		def self.set_environment(auth_file)
 		  ENV['GOOGLE_APPLICATION_CREDENTIALS'] = auth_file
 		end
@@ -58,14 +58,13 @@ module SpeechToText
 		  		      }
 
 		  operation = speech.long_running_recognize config, audio
-		  return operation,speech
+		  return operation.name
 		end
 
-		def self.check_job(params)
+		def self.check_job(operation_name)
 		  # construct a new operation object from the id
-		  operation  = params[0]
-		  speech = params[1]
-		  operation2 = speech.get_operation  operation.name
+			speech = Google::Cloud::Speech.new(version: :v1p1beta1)
+		  operation2 = speech.get_operation  operation_name
 		  operation2.wait_until_done!
 		  return operation2.results
 		end
