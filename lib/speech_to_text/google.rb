@@ -37,8 +37,7 @@ module SpeechToText
 		end
 
 		#uploads audio file to a google bucket
-		def self.google_storage(published_file,recordID,bucket_name,auth_file)
-		  set_environment(auth_file)
+		def self.google_storage(published_file,recordID,bucket_name)
 		  audio_file = "#{published_file}/#{recordID}/#{recordID}.flac"
 			storage = Google::Cloud::Storage.new project_id: bucket_name
 			bucket  = storage.bucket bucket_name
@@ -47,8 +46,7 @@ module SpeechToText
 		end
 
 
-		def self.create_job(recordID,bucket_name,auth_file)
-		  set_environment(auth_file)
+		def self.create_job(recordID,bucket_name)
 		  speech = Google::Cloud::Speech.new(version: :v1p1beta1)
 
 		  	# The audio file's encoding and sample rate
@@ -63,9 +61,8 @@ module SpeechToText
 		  return operation,speech
 		end
 
-		def self.check_job(params,auth_file)
+		def self.check_job(params)
 		  # construct a new operation object from the id
-		  set_environment(auth_file)
 		  operation  = params[0]
 		  speech = params[1]
 		  operation2 = speech.get_operation  operation.name
