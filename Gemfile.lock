@@ -4,6 +4,7 @@ PATH
     speech_to_text (0.1.1)
       google-cloud-speech (= 0.35.0)
       google-cloud-storage (= 1.18.2)
+      ibm_watson (~> 0.18.2)
 
 GEM
   remote: https://rubygems.org/
@@ -135,4 +136,4 @@ DEPENDENCIES
   speech_to_text!
 
 BUNDLED WITH
-   2.0.1
+   2.0.2

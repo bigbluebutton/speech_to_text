@@ -38,35 +38,34 @@ module SpeechToText
 
 		#create and write the webvtt file
 		def self.write_to_webvtt(published_files,recordID,myarray)
-
 		  filename = "#{published_files}/#{recordID}/caption_en_US.vtt"
 		  file = File.open(filename,"w")
 		  file.puts ("WEBVTT\n\n")
 
-		  i=0
+		  i = 0
 
-		  while(i<myarray.length)
+		  while(i < myarray.length)
 
 		    file.puts i/30 + 1
-		    if i+28 < myarray.length
-		      file.puts "#{seconds_to_timestamp myarray[i]} --> #{seconds_to_timestamp myarray[i+28]}"
-		      file.puts "#{myarray[i+2]} #{myarray[i+5]} #{myarray[i+8]} #{myarray[i+11]} #{myarray[i+14]}"
-		      file.puts "#{myarray[i+17]} #{myarray[i+20]} #{myarray[i+23]} #{myarray[i+26]} #{myarray[i+29]}\n\n"
+		    if i + 28 < myarray.length
+		      file.puts "#{seconds_to_timestamp myarray[i]} --> #{seconds_to_timestamp myarray[i + 28]}"
+		      file.puts "#{myarray[i + 2]} #{myarray[i + 5]} #{myarray[i + 8]} #{myarray[i + 11]} #{myarray[i + 14]}"
+		      file.puts "#{myarray[i + 17]} #{myarray[i + 20]} #{myarray[i + 23]} #{myarray[i + 26]} #{myarray[i + 29]}\n\n"
 		    else
 		      remainder = myarray.length - i
-		      file.puts "#{seconds_to_timestamp myarray[i]} --> #{seconds_to_timestamp myarray[myarray.length-2]}"
+		      file.puts "#{seconds_to_timestamp myarray[i]} --> #{seconds_to_timestamp myarray[myarray.length - 2]}"
 		      count = 0
 		      flag = true
 		      while (count < remainder )
-		        file.print "#{myarray[i+2]} "
+		        file.print "#{myarray[i + 2]} "
 		        if flag
 		          if count > 9
 		            file.print "\n"
 		            flag = false
 		          end
 		        end
-		        i+=3
-		        count+=3
+		        i += 3
+		        count += 3
 		      end
 		    end
 		    i = i + 30

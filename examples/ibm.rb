@@ -1,10 +1,9 @@
 
 require "speech_to_text"
-require("ibm_watson/speech_to_text_v1")
+require "ibm_watson/speech_to_text_v1"
 
 published_files_path = ARGV[0] 
-recordID = ARGV[1] 
-apikey = ARGV[2]
+apikey = ARGV[1]
 
 #SpeechToText::IbmWatsonS2T.ibm_speech_to_text(published_files_path, recordID, apikey)
 
@@ -34,9 +33,11 @@ speech_to_text = IBMWatson::SpeechToTextV1.new(
 #end
 
 audio_file = File.open(Dir.getwd + "/resources/test/speech.wav")
-service_response = speech_to_text.create_job(
+service_response = SpeechToText::IbmWatsonS2T.create_job(
+	apikey: apikey,
   audio: audio_file,
-  content_type: "audio/wav"
+  content_type: "audio/wav",
+  timestamps: true
 )
 
 puts "Create Job Result = \n" 
@@ -47,12 +48,28 @@ puts service_response.result
 job_id = service_response.result["id"]
 
 puts "job_id=#{job_id}"
-service_response = speech_to_text.check_job(id: job_id)
+service_response = SpeechToText::IbmWatsonS2T.check_job(id: job_id, apikey: apikey)
 puts "CHECK JOB RESULT = \n"
 puts service_response.result
 
-service_response = speech_to_text.check_jobs
-puts "GET JOBS RESULT = \n"
+sleep(10)
+service_response = SpeechToText::IbmWatsonS2T.check_job(id: job_id, apikey: apikey)
+puts "CHECK JOB RESULT AFTER 10sec = \n"
 puts service_response.result
+
+sleep(10)
+service_response = SpeechToText::IbmWatsonS2T.check_job(id: job_id, apikey: apikey)
+puts "CHECK JOB RESULT AFTER 20sec= \n"
+puts service_response.result
+
+myarray = SpeechToText::IbmWatsonS2T.create_array_watson(service_response.result["results"][0])
+puts myarray
+
+SpeechToText::Util.write_to_webvtt(Dir.getwd + "/resources", "test", myarray)
+
+
+#service_response = speech_to_text.check_jobs
+#puts "GET JOBS RESULT = \n"
+#puts service_response.result
 
 
