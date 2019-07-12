@@ -31,50 +31,42 @@ module SpeechToText
   		return data_array
 		end
 
+		#set environment for worker
+		def self.set_environment(auth_file)
+		  ENV['GOOGLE_APPLICATION_CREDENTIALS'] = auth_file
+		end
+
 		#uploads audio file to a google bucket
-		def self.google_storage(published_files,recordID,bucket_name)
+		def self.google_storage(published_file,recordID,bucket_name)
+		  audio_file = "#{published_file}/#{recordID}/#{recordID}.flac"
 			storage = Google::Cloud::Storage.new project_id: bucket_name
 			bucket  = storage.bucket bucket_name
-			file = bucket.create_file "#{published_files}/#{recordID}/#{recordID}.flac","#{recordID}.flac"
+			file = bucket.create_file audio_file, "#{recordID}.flac"
 			return file
 		end
 
-		#return the results from google speech
-		def self.google_transcription(recordID,bucket_name)
-		  # Instantiates a client
-		  speech = Google::Cloud::Speech.new
 
-		  # The audio file's encoding and sample rate
-		  config = { encoding:          :FLAC,
-		             sample_rate_hertz: 16000,#transcoded_movie.audio_sample_rate,
-		             language_code:     "en-US",
-		             enable_word_time_offsets: true }
-		  audio  = { #content: audio_file #using local audio file
-		             #uri: "gs://bbb-accessibility/video.FLAC" #static bucket file usage
-		             uri: "gs://#{bucket_name}/#{recordID}.flac" #using the now uploaded audio file from the bucket
-		           }
+		def self.create_job(recordID,bucket_name)
+		  speech = Google::Cloud::Speech.new(version: :v1p1beta1)
 
-		  # Detects speech in the audio file
+		  	# The audio file's encoding and sample rate
+		  	config = {
+		  		      language_code:     "en-US",
+		  		      enable_word_time_offsets: true }
+		  	audio  = { #content: audio_file #using local audio file
+		  		        uri: "gs://#{bucket_name}/#{recordID}.flac" #using the now uploaded audio file from the bucket
+		  		      }
+
 		  operation = speech.long_running_recognize config, audio
-
-		  #puts "Operation started"
-
-		  operation.wait_until_done!
-
-		  raise operation.results.message if operation.error?
-
-		  results = operation.response.results
-		  return results
+		  return operation.name
 		end
 
-		#Google-speech-to-text function
-		def self.google_speech_to_text(published_files,recordID,auth_file,bucket_name)
-			ENV['GOOGLE_APPLICATION_CREDENTIALS'] = auth_file
-		  file = google_storage(published_files,recordID,bucket_name)
-		  results = google_transcription(recordID,bucket_name)
-		  data_array = create_array_google(results)
-		  Util.write_to_webvtt(published_files,recordID,data_array)
-			file.delete
+		def self.check_job(operation_name)
+		  # construct a new operation object from the id
+			speech = Google::Cloud::Speech.new(version: :v1p1beta1)
+		  operation2 = speech.get_operation  operation_name
+		  operation2.wait_until_done!
+		  return operation2.results
 		end
   end
 end

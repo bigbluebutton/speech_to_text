@@ -4,12 +4,37 @@
 # BigBlueButton open source conferencing system - http://www.bigbluebutton.org/
 #
 # Copyright (c) 2019 BigBlueButton Inc. and by respective authors (see below).
-#
+
+require "speech_to_text"
+require("ibm_watson/speech_to_text_v1")
 require_relative "util.rb"
 
 module SpeechToText
 	module IbmWatsonS2T
 		include Util
+
+		#create new job on watson server by uploading audio
+		#function returns 2 variables IBMWatson::SpeechToTextV1 object and jobid
+	  def self.create_job(published_files,recordID,apikey)
+	    speech_to_text = IBMWatson::SpeechToTextV1.new(iam_apikey: apikey)
+	    audio_file = File.open("#{published_files}/#{recordID}/#{recordID}.flac")
+	    service_response = speech_to_text.create_job(audio: audio_file,content_type: "audio/flac", timestamps: true)
+	    job_id = service_response.result["id"]
+	    return job_id
+	  end
+
+		#functions checks the status of specific jobid
+		#pass array of 2 variables as argumanet [IBMWatson::SpeechToTextV1 object, jobid]
+	  def self.check_job(job_id,apikey)
+	    status = "processing"
+			speech_to_text = IBMWatson::SpeechToTextV1.new(iam_apikey: apikey)
+      service_response = speech_to_text.check_job(id: job_id)
+			return service_response.result
+
+			#To create watson array pass service_response.result["results"][0] as argument as shown below
+			#myarray = create_array_watson service_response.result["results"][0]
+	  end
+
 		#create array from json file
 		def self.create_array_watson data
 		  k = 0
@@ -38,20 +63,6 @@ module SpeechToText
 		  k+=1
 		  end
 		  return myarray
-		end
-
-		#ibm speech to text main function
-		def self.ibm_speech_to_text(published_files,recordID,apikey)
-			require 'json'
-		  jsonfile_path = "#{published_files}/#{recordID}/#{recordID}.json"
-		  watson_command = "curl -X POST -u \"apikey:#{apikey}\" --header \"Content-Type: audio/flac\" --data-binary @#{published_files}/#{recordID}/#{recordID}.flac \"https://stream.watsonplatform.net/speech-to-text/api/v1/recognize?timestamps=true\" > #{jsonfile_path}"
-		  system("#{watson_command}")
-		  out = File.open(jsonfile_path, "r")
-		  data = JSON.load out
-		  myarray = create_array_watson data
-		  Util.write_to_webvtt(published_files,recordID,myarray)
-			out.close
-			File.delete(jsonfile_path)
 		end
 	end
 end

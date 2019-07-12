@@ -25,7 +25,7 @@ module SpeechToText
     end
 
     #check status of specific jobid
-    def self.check_status(userID,jobID,authKey,job_details_file)
+    def self.check_job(userID,jobID,authKey,job_details_file)
       loop do
         job_status = "curl \"https://api.speechmatics.com/v1.0/user/#{userID}/jobs/#{jobID}/?auth_token=#{authKey}\" > #{job_details_file}"
         system("#{job_status}")
@@ -63,7 +63,7 @@ module SpeechToText
       job_transcription_file = "#{published_path}/#{recordID}/#{jobID}_transcription.json"
 
       #get status of last job
-      check_status(userID,jobID,authKey,job_details_file)
+      check_job(userID,jobID,authKey,job_details_file)
 
       #get transcription by passing specific jobID as a parameter
       transcription_command = "curl \"https://api.speechmatics.com/v1.0/user/#{userID}/jobs/#{jobID}/transcript?auth_token=#{authKey}\" > #{job_transcription_file}"
