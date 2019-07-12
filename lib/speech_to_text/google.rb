@@ -42,7 +42,6 @@ module SpeechToText
 			storage = Google::Cloud::Storage.new project_id: bucket_name
 			bucket  = storage.bucket bucket_name
 			file = bucket.create_file audio_file, "#{recordID}.flac"
-			return file
 		end
 
 
@@ -67,6 +66,13 @@ module SpeechToText
 		  operation2 = speech.get_operation  operation_name
 		  operation2.wait_until_done!
 		  return operation2.results
+		end
+
+		def self.delete_google_storage(bucket_name, recordID)
+			storage = Google::Cloud::Storage.new project_id: bucket_name
+			bucket  = storage.bucket bucket_name
+			file = bucket.file "#{recordID}.flac"
+  		file.delete
 		end
   end
 end
