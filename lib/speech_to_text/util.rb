@@ -37,9 +37,9 @@ module SpeechToText
 		end
 
 		#create and write the webvtt file
-		def self.write_to_webvtt(published_files,recordID,myarray)
+		def self.write_to_webvtt(vtt_file_path,vtt_file_name,myarray)
 
-		  filename = "#{published_files}/#{recordID}/caption_en_US.vtt"
+		  filename = "#{vtt_file_path}/#{vtt_file_name}"
 		  file = File.open(filename,"w")
 		  file.puts ("WEBVTT\n\n")
 
@@ -75,25 +75,21 @@ module SpeechToText
 		  file.close
 
 		  #system(scp -v "#{$published_files}/caption_en_US.vtt" "#{$captions_inbox_path}/#{$meeting_id}-#{$current_time}-track.txt")
-		  captions_file_name = "#{published_files}/#{recordID}/captions.json"
+		  captions_file_name = "#{vtt_file_path}/captions.json"
 		  captions_file = File.open(captions_file_name,"w")
 		  captions_file.puts ("[{\"localeName\": \"English (United States)\", \"locale\": \"en_US\"}]")
 		end
 
 		#def video_to_audio
-		def self.video_to_audio(published_files,recordID,service)
-			if service == "google" || service == "ibm"
-			  video_to_audio_command = "ffmpeg -i #{published_files}/#{recordID}/video/video.mp4 -ac 1 -ar 16000 #{published_files}/#{recordID}/#{recordID}.flac"
+		def self.video_to_audio(video_file_path:,
+														video_name:,
+														video_content_type:,
+														audio_file_path:,
+														audio_name:,
+														audio_content_type:
+													)
+			  video_to_audio_command = "ffmpeg -i #{video_file_path}/#{video_name}.#{video_content_type} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
 			  system("#{video_to_audio_command}")
-			elsif service == "mozilla_deepspeech"
-					video_to_audio_command = "ffmpeg -i #{published_files}/#{recordID}/video/video.mp4 -ac 1 -ar 16000 #{published_files}/#{recordID}/#{recordID}.wav"
-					system("#{video_to_audio_command}")
-				elsif service == "speechmatics"
-					video_to_audio_command = "ffmpeg -i #{published_files}/#{recordID}/video/video.mp4 #{published_files}/#{recordID}/#{recordID}.mp3"
-				  system("#{video_to_audio_command}")
-				else
-					puts "No service found....."
-			end
 		end
 	end
 end
