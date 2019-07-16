@@ -37,15 +37,15 @@ module SpeechToText
 		end
 
 		#uploads audio file to a google bucket
-		def self.google_storage(published_file,recordID,bucket_name)
-		  audio_file = "#{published_file}/#{recordID}/#{recordID}.flac"
+		def self.google_storage(audio_file_path,audio_name,audio_content_type,bucket_name)
+		  audio_file = "#{audio_file_path}/#{audio_name}.#{audio_content_type}"
 			storage = Google::Cloud::Storage.new project_id: bucket_name
 			bucket  = storage.bucket bucket_name
-			file = bucket.create_file audio_file, "#{recordID}.flac"
+			file = bucket.create_file audio_file, "#{audio_name}.#{audio_content_type}"
 		end
 
 
-		def self.create_job(recordID,bucket_name)
+		def self.create_job(audio_name,audio_content_type,bucket_name)
 		  speech = Google::Cloud::Speech.new(version: :v1p1beta1)
 
 		  	# The audio file's encoding and sample rate
@@ -53,7 +53,7 @@ module SpeechToText
 		  		      language_code:     "en-US",
 		  		      enable_word_time_offsets: true }
 		  	audio  = { #content: audio_file #using local audio file
-		  		        uri: "gs://#{bucket_name}/#{recordID}.flac" #using the now uploaded audio file from the bucket
+		  		        uri: "gs://#{bucket_name}/#{audio_name}.#{audio_content_type}" #using the now uploaded audio file from the bucket
 		  		      }
 
 		  operation = speech.long_running_recognize config, audio
@@ -68,10 +68,10 @@ module SpeechToText
 		  return operation2.results
 		end
 
-		def self.delete_google_storage(bucket_name, recordID)
+		def self.delete_google_storage(bucket_name,audio_name,audio_content_type)
 			storage = Google::Cloud::Storage.new project_id: bucket_name
 			bucket  = storage.bucket bucket_name
-			file = bucket.file "#{recordID}.flac"
+			file = bucket.file "#{audio_name}.#{audio_content_type}"
   		file.delete
 		end
   end

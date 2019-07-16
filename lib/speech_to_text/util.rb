@@ -77,7 +77,7 @@ module SpeechToText
 		  #system(scp -v "#{$published_files}/caption_en_US.vtt" "#{$captions_inbox_path}/#{$meeting_id}-#{$current_time}-track.txt")
 		  captions_file_name = "#{vtt_file_path}/captions.json"
 		  captions_file = File.open(captions_file_name,"w")
-		  captions_file.puts ("[{\"localeName\": \"English (United States)\", \"locale\": \"en_US\"}]")
+		  captions_file.puts "[{\"localeName\": \"English (United States)\", \"locale\": \"en_US\"}]"
 		end
 
 		#def video_to_audio

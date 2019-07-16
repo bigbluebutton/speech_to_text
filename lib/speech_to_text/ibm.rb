@@ -52,20 +52,18 @@ module SpeechToText
 	    	speech_to_text = IBMWatson::SpeechToTextV1.new(iam_apikey: apikey)
 			end
 
-			if(audio_file_path.nil? || audio.nil? || content_type.nil?)
+		if(audio_file_path.nil? || audio.nil? || content_type.nil?)
 				puts "audio file not found.."
 				puts "try again and be careful with file path, audio name and content type"
-			else
+		else
 	    	audio_file = File.open("#{audio_file_path}/#{audio}.#{content_type}")
 				service_response = speech_to_text.create_job(audio: audio_file,content_type: "audio/#{content_type}", timestamps: true)
 				job_id = service_response.result["id"]
-			end
+		end
 
 			return job_id
 	  end
 
-		#functions checks the status of specific jobid
-		#pass array of 2 variables as argumanet [IBMWatson::SpeechToTextV1 object, jobid]
 	  def self.check_job(job_id,apikey)
 			if(job_id.nil? || job_id == "Error! job not created")
 				puts "job not created"
