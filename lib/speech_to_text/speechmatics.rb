@@ -46,21 +46,21 @@ module SpeechToText
     end
 
 		#speechmatics speech to text main function
-    def self.speechmatics_speech_to_text(published_path,recordID,userID,authKey)
+    def self.speechmatics_speech_to_text(audio_file_path,audio_name,audio_content_type,userID,authKey)
       #upload audio to speechmatics
-      upload_audio = "curl -F data_file=@#{published_path}/#{recordID}/#{recordID}.mp3 -F model=en-GB \"https://api.speechmatics.com/v1.0/user/#{userID}/jobs/?auth_token=#{authKey}\""
+      upload_audio = "curl -F data_file=@#{audio_file_path}/#{audio_name}.#{audio_content_type} -F model=en-GB \"https://api.speechmatics.com/v1.0/user/#{userID}/jobs/?auth_token=#{authKey}\""
       system("#{upload_audio}")
 
       #get all jobs from speechmatics
-      joblist_json = "#{published_path}/#{recordID}/joblist.json"
+      joblist_json = "#{audio_file_path}/#{audio_name}.json"
       get_job_list = "curl \"https://api.speechmatics.com/v1.0/user/#{userID}/jobs/?auth_token=#{authKey}\" > #{joblist_json}"
     	system("#{get_job_list}")
 
       job_list = File.open(joblist_json,"r")
     	jobs = JSON.load job_list
       jobID = jobs["jobs"][0]["id"]
-      job_details_file = "#{published_path}/#{recordID}/#{jobID}_details.json"
-      job_transcription_file = "#{published_path}/#{recordID}/#{jobID}_transcription.json"
+      job_details_file = "#{audio_file_path}/#{jobID}_details.json"
+      job_transcription_file = "#{audio_file_path}/#{jobID}_transcription.json"
 
       #get status of last job
       check_job(userID,jobID,authKey,job_details_file)
@@ -77,7 +77,7 @@ module SpeechToText
       speechmatics_array = create_array_speechmatic data
 
       #write to webvtt file
-      Util.write_to_webvtt(published_path,recordID,speechmatics_array)
+      Util.write_to_webvtt(audio_file_path,"#{audio_name}.vtt",speechmatics_array)
       File.delete(job_details_file)
       File.delete(job_transcription_file)
       File.delete(joblist_json)
