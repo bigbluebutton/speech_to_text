@@ -45,12 +45,12 @@ module SpeechToText
 		end
 
 
-		def self.create_job(audio_name,audio_content_type,bucket_name)
+		def self.create_job(audio_name,audio_content_type,bucket_name,language_code)
 		  speech = Google::Cloud::Speech.new(version: :v1p1beta1)
 
 		  	# The audio file's encoding and sample rate
 		  	config = {
-		  		      language_code:     "en-US",
+		  		      language_code: language_code,
 		  		      enable_word_time_offsets: true }
 		  	audio  = { #content: audio_file #using local audio file
 		  		        uri: "gs://#{bucket_name}/#{audio_name}.#{audio_content_type}" #using the now uploaded audio file from the bucket
