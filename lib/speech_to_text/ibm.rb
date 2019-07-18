@@ -20,6 +20,7 @@ module SpeechToText
       apikey:,
       audio:,
       content_type:,
+			language_code:"en-US",
       model: nil,
       callback_url: nil,
       events: nil,
@@ -57,7 +58,7 @@ module SpeechToText
 				puts "try again and be careful with file path, audio name and content type"
 		else
 	    	audio_file = File.open("#{audio_file_path}/#{audio}.#{content_type}")
-				service_response = speech_to_text.create_job(audio: audio_file,content_type: "audio/#{content_type}", timestamps: true)
+				service_response = speech_to_text.create_job(audio: audio_file,content_type: "audio/#{content_type}", timestamps: true, model: "#{language_code}_BroadbandModel")
 				job_id = service_response.result["id"]
 		end
 
