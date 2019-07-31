@@ -12,8 +12,8 @@ module SpeechToText
 		require 'json'
 		include Util
 
-		def self.create_job(audio_file_path,audio_name,audio_content_type,userID,authKey,jobID_json_file)
-			upload_audio = "curl -F data_file=@#{audio_file_path}/#{audio_name}.#{audio_content_type} -F model=en-GB \"https://api.speechmatics.com/v1.0/user/#{userID}/jobs/?auth_token=#{authKey}\" > #{jobID_json_file}"
+		def self.create_job(audio_file_path,audio_name,audio_content_type,userID,authKey,model,jobID_json_file)
+			upload_audio = "curl -F data_file=@#{audio_file_path}/#{audio_name}.#{audio_content_type} -F model=#{model} \"https://api.speechmatics.com/v1.0/user/#{userID}/jobs/?auth_token=#{authKey}\" > #{jobID_json_file}"
 		  system("#{upload_audio}")
 			file = File.open(jobID_json_file)
 			data = JSON.load file
