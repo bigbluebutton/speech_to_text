@@ -10,8 +10,8 @@ require("ibm_watson/speech_to_text_v1")
 require_relative "util.rb"
 
 module SpeechToText
-	module IbmWatsonS2T
-		include Util
+  module IbmWatsonS2T
+    include Util
 
 		#create new job on watson server by uploading audio
 		#function returns 2 variables IBMWatson::SpeechToTextV1 object and jobid
