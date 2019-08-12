@@ -36,7 +36,6 @@ module SpeechToText
       return "#{hh}:#{mm}:#{ss}"
     end
 
-
 		#create and write the webvtt file
 		def self.write_to_webvtt(vtt_file_path,vtt_file_name,myarray)
 
