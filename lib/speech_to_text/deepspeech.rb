@@ -36,7 +36,7 @@ module SpeechToText
 			system("#{deepspeech_command}")
 		end
 
-		def get_array(json_file)
+		def self.get_array(json_file)
 			file = File.open(json_file,"r")
       data = JSON.load(file)
 			deepspeech_array = create_mozilla_array(data)
