@@ -5,6 +5,7 @@
 #
 # Copyright (c) 2019 BigBlueButton Inc. and by respective authors (see below).
 #
+require 'json'
 require_relative "util.rb"
 
 module SpeechToText
@@ -28,16 +29,18 @@ module SpeechToText
     	return myarray
     end
 
-    def self.mozilla_speech_to_text(published_files, recordID, model_path )
-     require 'json'
-     jsonfile_path = "#{published_files}/#{recordID}/#{recordID}.json"
-     deepspeech_command = "#{model_path}/deepspeech --model #{model_path}/models/output_graph.pbmm --alphabet #{model_path}/models/alphabet.txt --lm #{model_path}/models/lm.binary --trie #{model_path}/models/trie -e --audio #{published_files}/#{recordID}/#{recordID}.wav > #{jsonfile_path}"
-     system("#{deepspeech_command}")
-     file = File.open(jsonfile_path,"r")
-     data = JSON.load(file)
-     deepspeech_array = create_mozilla_array(data)
-     Util.write_to_webvtt(published_files,recordID,deepspeech_array)
-		 File.delete(jsonfile_path)
-    end
+		def self.create_job(audio_file,json_file, model_path )
+			#audio_file = "/home/abc/audio.wav"
+			#json_file = "/home/xyz/jsonfile.json"
+      deepspeech_command = "#{model_path}/deepspeech --model #{model_path}/models/output_graph.pbmm --alphabet #{model_path}/models/alphabet.txt --lm #{model_path}/models/lm.binary --trie #{model_path}/models/trie -e --audio #{audio_file} > #{json_file}"
+			system("#{deepspeech_command}")
+		end
+
+		def self.get_array(json_file)
+			file = File.open(json_file,"r")
+      data = JSON.load(file)
+			deepspeech_array = create_mozilla_array(data)
+			return deepspeech_array
+		end
   end
 end

@@ -36,14 +36,14 @@ module SpeechToText
       return "#{hh}:#{mm}:#{ss}"
     end
 
-    #create and write the webvtt file
-    def self.write_to_webvtt(published_files,recordID,myarray)
-      filename = "#{published_files}/#{recordID}/caption_en_US.vtt"
-      file = File.open(filename,"w")
-      file.puts ("WEBVTT\n\n")
+		#create and write the webvtt file
+		def self.write_to_webvtt(vtt_file_path,vtt_file_name,myarray)
+
+		  filename = "#{vtt_file_path}/#{vtt_file_name}"
+		  file = File.open(filename,"w")
+		  file.puts ("WEBVTT\n\n")
 
       i = 0
-
       while(i < myarray.length)
 
         file.puts i/30 + 1
@@ -73,27 +73,22 @@ module SpeechToText
 
       file.close
 
-      #system(scp -v "#{$published_files}/caption_en_US.vtt" "#{$captions_inbox_path}/#{$meeting_id}-#{$current_time}-track.txt")
-      captions_file_name = "#{published_files}/#{recordID}/captions.json"
-      captions_file = File.open(captions_file_name,"w")
-      captions_file.puts ("[{\"localeName\": \"English (United States)\", \"locale\": \"en_US\"}]")
-    end
+		  #system(scp -v "#{$published_files}/caption_en_US.vtt" "#{$captions_inbox_path}/#{$meeting_id}-#{$current_time}-track.txt")
+		  captions_file_name = "#{vtt_file_path}/captions.json"
+		  captions_file = File.open(captions_file_name,"w")
+		  captions_file.puts "[{\"localeName\": \"English (United States)\", \"locale\": \"en_US\"}]"
+		end
 
-    def self.convert_video_to_audio(recordings_dir, provider)
-      if provider == "google" || provider == "ibm"
-        video_to_audio_command = "ffmpeg -i #{recordings_dir}/video/video.mp4 -ac 1 -ar 16000 #{recordings_dir}/audio.flac"
-        system("#{video_to_audio_command}")
-      elsif provider == "mozilla_deepspeech"
-          video_to_audio_command = "ffmpeg -i #{recordings_dir}/video/video.mp4 -ac 1 -ar 16000 #{recordings_dir}/audio.wav"
-          system("#{video_to_audio_command}")
-      elsif provider == "speechmatics"
-          video_to_audio_command = "ffmpeg -i #{recordings_dir}/video/video.mp4 #{recordings_dir}/audio.mp3"
-          system("#{video_to_audio_command}")
-      else
-        # TODO:
-        # Should throw exception here
-          puts "No provider found....."
-      end
-    end
-  end
+		#def video_to_audio
+		def self.video_to_audio(video_file_path:,
+														video_name:,
+														video_content_type:,
+														audio_file_path:,
+														audio_name:,
+														audio_content_type:
+													)
+			  video_to_audio_command = "ffmpeg -i #{video_file_path}/#{video_name}.#{video_content_type} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
+			  system("#{video_to_audio_command}")
+		end
+	end
 end
