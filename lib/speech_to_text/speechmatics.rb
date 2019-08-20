@@ -6,10 +6,12 @@
 # Copyright (c) 2019 BigBlueButton Inc. and by respective authors (see below).
 #
 require_relative "util.rb"
+require 'net/http'
+require 'uri'
+require 'json'
 
 module SpeechToText
 	module SpeechmaticsS2T
-		require 'json'
 		include Util
 
 		def self.create_job(audio_file_path,audio_name,audio_content_type,userID,authKey,model,jobID_json_file)
@@ -22,21 +24,19 @@ module SpeechToText
 		end
 
 		#check status of specific jobid
-		def self.check_job(userID,jobID,authKey,job_details_file)
-				job_status = "curl \"https://api.speechmatics.com/v1.0/user/#{userID}/jobs/#{jobID}/?auth_token=#{authKey}\" > #{job_details_file}"
-				system("#{job_status}")
-				job_json_data = File.open("#{job_details_file}","r")
-				job_data = JSON.load job_json_data
+		def self.check_job(userID,jobID,authKey)
+				uri = URI.parse("https://api.speechmatics.com/v1.0/user/#{userID}/jobs/#{jobID}/?auth_token=#{authKey}")
+				response = Net::HTTP.get_response(uri)
+				job_data = JSON.load response.body
 				wait_time = job_data["job"]["check_wait"]
 				#job_status = job_data["job"]["job_status"]
 				return wait_time
 		end
 
-		def self.get_transcription(userID,jobID,authKey,transcription_file)
-			transcription_command = "curl \"https://api.speechmatics.com/v1.0/user/#{userID}/jobs/#{jobID}/transcript?auth_token=#{authKey}\" > #{transcription_file}"
-		  system("#{transcription_command}")
-			out = File.open("#{transcription_file}", "r")
-		  data = JSON.load out
+		def self.get_transcription(userID,jobID,authKey)
+			uri = URI.parse("https://api.speechmatics.com/v1.0/user/#{userID}/jobs/#{jobID}/transcript?auth_token=#{authKey}")
+			response = Net::HTTP.get_response(uri)
+			data = JSON.load response.body
 			return data
 		end
 
