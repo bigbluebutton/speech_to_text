@@ -7,10 +7,38 @@
 #
 require 'json'
 require_relative "util.rb"
+require 'net/http'
+require 'uri'
+
 
 module SpeechToText
 	module MozillaDeepspeechS2T
     include Util
+
+		def create_job(audio,jobdetails_json)
+			request = "curl -F \"file=#{audio}\" \"http://localhost:3000/deepspeech/createjob\" > #{jobdetails_json}"
+			system(request)
+			file = File.open(jobdetails_json,"r")
+			data = JSON.load file
+			return data
+		end
+
+		def checkstatus(jobID)
+			uri = URI.parse("http://localhost:3000/deepspeech/checkstatus/#{jobID}")
+      response = Net::HTTP.get_response(uri)
+			return response
+		end
+
+		def self.generate_transcript(audio,json_file, model_path )
+			deepspeech_command = "#{model_path}/deepspeech --model #{model_path}/models/output_graph.pbmm --alphabet #{model_path}/models/alphabet.txt --lm #{model_path}/models/lm.binary --trie #{model_path}/models/trie -e --audio #{audio} > #{json_file}"
+			system("#{deepspeech_command}")
+		end
+
+		def order_transcript(jobID)
+			uri = URI.parse("http://localhost:3000/deepspeech/transcript/#{jobID}")
+      response = Net::HTTP.get_response(uri)
+			return response
+		end
 
     def self.create_mozilla_array(data)
     	i=0
@@ -28,13 +56,6 @@ module SpeechToText
     	end
     	return myarray
     end
-
-		def self.create_job(audio_file,json_file, model_path )
-			#audio_file = "/home/abc/audio.wav"
-			#json_file = "/home/xyz/jsonfile.json"
-      deepspeech_command = "#{model_path}/deepspeech --model #{model_path}/models/output_graph.pbmm --alphabet #{model_path}/models/alphabet.txt --lm #{model_path}/models/lm.binary --trie #{model_path}/models/trie -e --audio #{audio_file} > #{json_file}"
-			system("#{deepspeech_command}")
-		end
 
 		def self.get_array(json_file)
 			file = File.open(json_file,"r")
