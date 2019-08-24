@@ -15,28 +15,28 @@ module SpeechToText
 	module MozillaDeepspeechS2T
     include Util
 
-		def self.create_job(audio,jobdetails_json)
-			request = "curl -F \"file=@#{audio}\" \"http://localhost:4000/deepspeech/createjob\" > #{jobdetails_json}"
+		def self.create_job(audio,server_url,jobdetails_json)
+			request = "curl -F \"file=@#{audio}\" \"#{server_url}/deepspeech/createjob\" > #{jobdetails_json}"
 			system(request)
 			file = File.open(jobdetails_json,"r")
 			data = JSON.load file
 			return data["jobID"]
 		end
 
-		def self.checkstatus(jobID)
-			uri = URI.parse("http://localhost:4000/deepspeech/checkstatus/#{jobID}")
+		def self.checkstatus(jobID,server_url)
+			uri = URI.parse("#{server_url}/deepspeech/checkstatus/#{jobID}")
       response = Net::HTTP.get_response(uri)
 			data = JSON.load response.body
 			return data["status"]
 		end
 
-		def self.generate_transcript(audio,json_file, model_path )
+		def self.generate_transcript(audio,json_file, model_path)
 			deepspeech_command = "#{model_path}/deepspeech --model #{model_path}/models/output_graph.pbmm --alphabet #{model_path}/models/alphabet.txt --lm #{model_path}/models/lm.binary --trie #{model_path}/models/trie -e --audio #{audio} > #{json_file}"
 			system("#{deepspeech_command}")
 		end
 
-		def self.order_transcript(jobID)
-			uri = URI.parse("http://localhost:4000/deepspeech/transcript/#{jobID}")
+		def self.order_transcript(jobID,server_url)
+			uri = URI.parse("#{server_url}/deepspeech/transcript/#{jobID}")
       response = Net::HTTP.get_response(uri)
 			data = JSON.load response.body
 			return data
