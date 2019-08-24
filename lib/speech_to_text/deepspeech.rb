@@ -15,18 +15,19 @@ module SpeechToText
 	module MozillaDeepspeechS2T
     include Util
 
-		def create_job(audio,jobdetails_json)
-			request = "curl -F \"file=#{audio}\" \"http://localhost:3000/deepspeech/createjob\" > #{jobdetails_json}"
+		def self.create_job(audio,jobdetails_json)
+			request = "curl -F \"file=@#{audio}\" \"http://localhost:4000/deepspeech/createjob\" > #{jobdetails_json}"
 			system(request)
 			file = File.open(jobdetails_json,"r")
 			data = JSON.load file
-			return data
+			return data["jobID"]
 		end
 
-		def checkstatus(jobID)
-			uri = URI.parse("http://localhost:3000/deepspeech/checkstatus/#{jobID}")
+		def self.checkstatus(jobID)
+			uri = URI.parse("http://localhost:4000/deepspeech/checkstatus/#{jobID}")
       response = Net::HTTP.get_response(uri)
-			return response
+			data = JSON.load response.body
+			return data["status"]
 		end
 
 		def self.generate_transcript(audio,json_file, model_path )
@@ -34,10 +35,11 @@ module SpeechToText
 			system("#{deepspeech_command}")
 		end
 
-		def order_transcript(jobID)
-			uri = URI.parse("http://localhost:3000/deepspeech/transcript/#{jobID}")
+		def self.order_transcript(jobID)
+			uri = URI.parse("http://localhost:4000/deepspeech/transcript/#{jobID}")
       response = Net::HTTP.get_response(uri)
-			return response
+			data = JSON.load response.body
+			return data
 		end
 
     def self.create_mozilla_array(data)
