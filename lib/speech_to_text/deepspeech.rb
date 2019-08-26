@@ -6,10 +6,9 @@
 # Copyright (c) 2019 BigBlueButton Inc. and by respective authors (see below).
 #
 require 'json'
-require_relative "util.rb"
 require 'net/http'
 require 'uri'
-
+require_relative "util.rb"
 
 module SpeechToText
 	module MozillaDeepspeechS2T
@@ -30,16 +29,17 @@ module SpeechToText
 			return data["status"]
 		end
 
-		def self.generate_transcript(audio,json_file, model_path)
-			deepspeech_command = "#{model_path}/deepspeech --model #{model_path}/models/output_graph.pbmm --alphabet #{model_path}/models/alphabet.txt --lm #{model_path}/models/lm.binary --trie #{model_path}/models/trie -e --audio #{audio} > #{json_file}"
-			system("#{deepspeech_command}")
-		end
-
 		def self.order_transcript(jobID,server_url)
 			uri = URI.parse("#{server_url}/deepspeech/transcript/#{jobID}")
       response = Net::HTTP.get_response(uri)
 			data = JSON.load response.body
 			return data
+		end
+
+		#used by deepspeech server only
+		def self.generate_transcript(audio,json_file, model_path)
+			deepspeech_command = "#{model_path}/deepspeech --model #{model_path}/models/output_graph.pbmm --alphabet #{model_path}/models/alphabet.txt --lm #{model_path}/models/lm.binary --trie #{model_path}/models/trie -e --audio #{audio} > #{json_file}"
+			system("#{deepspeech_command}")
 		end
 
     def self.create_mozilla_array(data)
@@ -58,12 +58,5 @@ module SpeechToText
     	end
     	return myarray
     end
-
-		def self.get_array(json_file)
-			file = File.open(json_file,"r")
-      data = JSON.load(file)
-			deepspeech_array = create_mozilla_array(data)
-			return deepspeech_array
-		end
   end
 end
