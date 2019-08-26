@@ -40,13 +40,13 @@ STEP 2. Get array using any service given below
 Then based on the service you can execute one of the following command.
 
 =>if service = ibm, execute following commands
-  example values,
-  audio_file_path = "/home/bbb",
-  apikey = "<apikey>", //provided by IBM
-  audio = "audio",
-  content_type = "mp3",
-  language_code = "en-US" //check this for language_code: https://github.com/silentflameCR/text-track-service
 ```ruby
+#example values
+audio_file_path = "/home/bbb"
+apikey = "<apikey>" #provided by IBM
+audio = "audio"
+content_type = "mp3"
+language_code = "en-US" #check this for language_code: https://github.com/silentflameCR/text-track-service
 job_id = SpeechToText::IbmWatsonS2T.create_job(audio_file_path:"/home/bbb",
                                                 apikey:"<apikey>",
                                                 audio:"audio",
@@ -83,12 +83,6 @@ myarray = SpeechToText::IbmWatsonS2T.create_array_watson(data["results"][0])
 ```
 
 =>if service = google,
-  example value,
-    audio_file_path = "/home/bbb",
-    audio_name = "audio",
-    audio_content_type = "mp3",
-    bucket_name = "mybucket"
-    language_code = "en-US" //check this for language_code:https://github.com/silentflameCR/text-track-service
 
 Execute following command in order to set environment
 ```ruby
@@ -97,6 +91,13 @@ SpeechToText::GoogleS2T.set_environment("<google_auth_file>")
 After setting environment, execute following commands to get google transcription
 bucket_name could be any string
 ```ruby
+#example value
+  audio_file_path = "/home/bbb"
+  audio_name = "audio"
+  audio_content_type = "mp3"
+  bucket_name = "mybucket"
+  language_code = "en-US" #check this for language_code:https://github.com/silentflameCR/text-track-service
+
 file = SpeechToText::GoogleS2T.google_storage(audio_file_path,audio_name,audio_content_type,bucket_name)
 operation_name = SpeechToText::GoogleS2T.create_job(audio_name,audio_content_type,bucket_name,language_code)
 data = SpeechToText::GoogleS2T.check_job(operation_name)
@@ -105,12 +106,12 @@ SpeechToText::GoogleS2T.delete_google_storage(bucket_name,audio_name,audio_conte
 ```
 
 =>if service = mozilla_deepspeech
-  example values
-   audio = "/home/bbb/audio.wav"
-   server_url = "http://localhost:4000"
 
 ```ruby
-#audio should be in wav format
+#example values
+ audio = "/home/bbb/audio.wav" #audio should be in wav format
+ server_url = "http://localhost:4000"
+
 #function will make a http post request to server_url/deepspeech/createjob
 jobID = SpeechToText::MozillaDeepspeechS2T.create_job(audio,server_url,jobdetails_json)
 
@@ -123,16 +124,17 @@ myarray = SpeechToText::MozillaDeepspeechS2T.create_mozilla_array(data)
 ```
 
 =>if service = speechmatics
-  example values,
-    audio_file_path = "/home/bbb",
-    audio_name = "audio",
-    audio_content_type = "mp3",
-    userID = "12345",  //provided by speechmetics
-    authKey = "<authKey>", //provided by speechmatics
-    jobID_json_file = "/home/bbb/audio/jobid.json", //method will create json file with job details
-    model = "en-US", //check this for model:https://github.com/silentflameCR/text-track-service
 
 ```ruby
+#example values
+  audio_file_path = "/home/bbb"
+  audio_name = "audio"
+  audio_content_type = "mp3"
+  userID = "12345"  #provided by speechmetics
+  authKey = "<authKey>" #provided by speechmatics
+  jobID_json_file = "/home/bbb/audio/jobid.json" #method will create json file with job details
+  model = "en-US" #check this for model:https://github.com/silentflameCR/text-track-service
+
 jobID = SpeechToText::SpeechmaticsS2T.create_job(audio_file_path,audio_name,audio_content_type,userID,authKey,model,jobID_json_file)
 wait_time = SpeechToText::SpeechmaticsS2T.check_job(userID,jobID,authKey)
 #if wait_time is nil
@@ -141,16 +143,17 @@ myarray = SpeechToText::SpeechmaticsS2T.create_array_speechmatic data
 ```
 
 =>if service = 3playmedia,
-example values,
-  audio = "/home/bbb/audio.mp3",
-  name = "test1",
-  api_Key = "<a_id_Key>", //provided by 3playmedia
-  turnaround_level_id = 5 //could be any number between 1 to 6. simply means the level of priority. 1 means lowest priority.
-  output_format_id = 139 //use 139 for vtt file and 7 for srt file
-  jobID_json_file = "/home/bbb/audio/jobid.json", //method will create json file with job details
-  vtt_file = "/home/bbb/vttfile.vtt"
 
 ```ruby
+#example values,
+  audio = "/home/bbb/audio.mp3"
+  name = "test1"
+  api_Key = "<a_id_Key>" #provided by 3playmedia
+  turnaround_level_id = 5 #could be any number between 1 to 6. simply means the level of priority. 1 means lowest priority.
+  output_format_id = 139 #use 139 for vtt file and 7 for srt file
+  jobID_json_file = "/home/bbb/audio/jobid.json" #method will create json file with job details
+  vtt_file = "/home/bbb/vttfile.vtt"
+
 job_id = SpeechToText::ThreePlaymediaS2T.create_job(api_key,audio_file,name,jobID_json_file)
 transcript_id = SpeechToText::ThreePlaymediaS2T.order_transcript(api_key,job_id,turnaround_level_id)
 status = SpeechToText::ThreePlaymediaS2T.check_status(api_key,transcript_id)
@@ -160,12 +163,12 @@ SpeechToText::ThreePlaymediaS2T.get_vttfile(api_key,output_format_id,transcript_
 
 Final step:
 once you get the myarray, you can execute command to create vtt file
-example values,
-
-vtt_file_path = "/home/bbb",
-vtt_file_name = "vttfile.vtt"
 
 ```ruby
+#example values
+vtt_file_path = "/home/bbb"
+vtt_file_name = "vttfile.vtt"
+
 SpeechToText::Util.write_to_webvtt(vtt_file_path,vtt_file_name,myarray)
 ```
 
