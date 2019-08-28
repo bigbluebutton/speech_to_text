@@ -77,6 +77,7 @@ module SpeechToText
 		  captions_file_name = "#{vtt_file_path}/captions.json"
 		  captions_file = File.open(captions_file_name,"w")
 		  captions_file.puts "[{\"localeName\": \"English (United States)\", \"locale\": \"en-US\"}]"
+      captions_file.close
 		end
 
 		#def video_to_audio
