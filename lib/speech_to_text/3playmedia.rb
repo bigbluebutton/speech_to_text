@@ -43,13 +43,18 @@ module SpeechToText
       status = res["data"]["status"]
     end
 
-    def self.get_vttfile(api_key,output_format_id,transcript_id,vtt_file)
+    def self.get_vttfile(api_key,output_format_id,transcript_id,vtt_file_path,vtt_file_name)
       uri = URI.parse("https://api.3playmedia.com/v3/transcripts/#{transcript_id}/text?api_key=#{api_key}&output_format_id=#{output_format_id}")
       response = Net::HTTP.get_response(uri)
       res = JSON.load response.body
-      out = File.open(vtt_file,"w")
+      out = File.open("#{vtt_filepath}/#{vtt_file_name}","w")
       out.puts res["data"]
       out.close
+
+			captions_file_name = "#{vtt_file_path}/captions.json"
+		  captions_file = File.open(captions_file_name,"w")
+		  captions_file.puts "[{\"localeName\": \"English (United States)\", \"locale\": \"en-US\"}]"
+      captions_file.close
     end
   end
 end
