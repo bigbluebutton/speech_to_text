@@ -74,11 +74,27 @@ module SpeechToText
       file.close
 
 		  #system(scp -v "#{$published_files}/caption_en_US.vtt" "#{$captions_inbox_path}/#{$meeting_id}-#{$current_time}-track.txt")
-		  captions_file_name = "#{vtt_file_path}/captions.json"
-		  captions_file = File.open(captions_file_name,"w")
-		  captions_file.puts "[{\"localeName\": \"English (United States)\", \"locale\": \"en-US\"}]"
+		  #captions_file_name = "#{vtt_file_path}/captions.json"
+		  #captions_file = File.open(captions_file_name,"w")
+		  #captions_file.puts "[{\"localeName\": \"English (United States)\", \"locale\": \"en-US\"}]"
 		end
 
+    def self.recording_json(file_path:,
+                            record_id:,
+                            timestamp:,
+                            language:)
+      filename = "#{file_path}/#{record_id}-#{timestamp}-track.json"
+      file = File.open(filename,"w")
+      file.puts "{"
+      file.puts "\"record_id\": \"#{record_id}\","
+      file.puts "\"kind\": \"subtitles\","
+      file.puts "\"lang\": \"#{language}\","
+      file.puts "\"label\": \"English\","
+      file.puts "\"original_filename\": \"caption_#{language}.vtt\","
+      file.puts "\"temp_filename\": \"#{record_id}-#{timestamp}-track.txt\""
+      file.puts "}"
+      file.close
+    end
 		#def video_to_audio
 		def self.video_to_audio(video_file_path:,
 														video_name:,
