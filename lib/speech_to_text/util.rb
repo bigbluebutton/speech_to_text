@@ -103,6 +103,9 @@ module SpeechToText
 														audio_name:,
 														audio_content_type:
 													)
+                          #dest_dir = "#{audio_file_path}"
+                          #FileUtils.mkdir_p(dest_dir)
+                          #FileUtils.chmod("u=wrx,g=wrx,o=r", dest_dir)
 			  video_to_audio_command = "ffmpeg -i #{video_file_path}/#{video_name}.#{video_content_type} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
 			  system("#{video_to_audio_command}")
 		end

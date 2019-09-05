@@ -22,63 +22,157 @@ Or install it yourself as:
 ## Usage
 BigBlueButton provides various captions services.
 Use following command to access the different services.
+
+STEP 1. Video to Audio
+
 You have to convert video to audio using following command
-
+for example,your video is inside "/home/abc/xyz/video.mp4" and you want audio in other directory "/home/bbb/audio.mp3"
 ```ruby
-SpeechToText::Util.video_to_audio(published_files,recordID,service)
+SpeechToText::Util.video_to_audio(video_file_path:"/home/abc/xyz",
+                                  video_name:"video",
+                                  video_content_type: "mp4",
+                                  audio_file_path:"/home/bbb",
+                                  audio_name:"audio",
+                                  audio_content_type:"mp3")
 ```
-where
-published_files = <path to your published files>
-recordID = <your recordID folder> (should be inside published_files)
-service = <google or ibm or mozilla_deepspeech or speechmatics>
-
+STEP 2. Get array using any service given below
 
 Then based on the service you can execute one of the following command.
 
-if service = ibm, execute following commands
-
+=>if service = ibm, execute following commands
 ```ruby
-job_id = SpeechToText::IbmWatsonS2T.create_job(published_files,recordID,apikey)
+#example values
+audio_file_path = "/home/bbb"
+apikey = "<apikey>" #provided by IBM
+audio = "audio"
+content_type = "mp3"
+language_code = "en-US" #check this for language_code: https://github.com/silentflameCR/text-track-service
+job_id = SpeechToText::IbmWatsonS2T.create_job(audio_file_path:"/home/bbb",
+                                                apikey:"<apikey>",
+                                                audio:"audio",
+                                                content_type:"mp3",
+                                                language_code:"en-US",
+                                                model: nil,
+                                                callback_url: nil,
+                                                events: nil,
+                                                user_token: nil,
+                                                results_ttl: nil,
+                                                language_customization_id: nil,
+                                                acoustic_customization_id: nil,
+                                                base_model_version: nil,
+                                                customization_weight: nil,
+                                                inactivity_timeout: nil,
+                                                keywords: nil,
+                                                keywords_threshold: nil,
+                                                max_alternatives: nil,
+                                                word_alternatives_threshold: nil,
+                                                word_confidence: nil,
+                                                timestamps: nil,
+                                                profanity_filter: nil,
+                                                smart_formatting: nil,
+                                                speaker_labels: nil,
+                                                customization_id: nil,
+                                                grammar_name: nil,
+                                                redaction: nil,
+                                                processing_metrics: nil,
+                                                processing_metrics_interval: nil,
+                                                audio_metrics: nil)
+
 data = SpeechToText::IbmWatsonS2T.check_job(job_id,apikey)
 myarray = SpeechToText::IbmWatsonS2T.create_array_watson(data["results"][0])
-SpeechToText::Util.write_to_webvtt(published_files,recordID,myarray)
 ```
 
-if service = google, execute following commands
-if you don't have worker then execute following command only one time but if you have multiple workers then you need to set environment for each worker.
+=>if service = google,
+
 Execute following command in order to set environment
 ```ruby
-SpeechToText::GoogleS2T.set_environment("auth_file")
+SpeechToText::GoogleS2T.set_environment("<google_auth_file>")
 ```
 After setting environment, execute following commands to get google transcription
-
+bucket_name could be any string
 ```ruby
-file = SpeechToText::GoogleS2T.google_storage("published_file","recordID","bucket_name")
-operation_name = SpeechToText::GoogleS2T.create_job("recordID","bucket_name")
+#example value
+  audio_file_path = "/home/bbb"
+  audio_name = "audio"
+  audio_content_type = "mp3"
+  bucket_name = "mybucket"
+  language_code = "en-US" #check this for language_code:https://github.com/silentflameCR/text-track-service
+
+file = SpeechToText::GoogleS2T.google_storage(audio_file_path,audio_name,audio_content_type,bucket_name)
+operation_name = SpeechToText::GoogleS2T.create_job(audio_name,audio_content_type,bucket_name,language_code)
 data = SpeechToText::GoogleS2T.check_job(operation_name)
 myarray = SpeechToText::GoogleS2T.create_array_google(data["results"])
-SpeechToText::Util.write_to_webvtt("published_file","recordID",myarray)
-file.delete
+SpeechToText::GoogleS2T.delete_google_storage(bucket_name,audio_name,audio_content_type)
 ```
 
-if service = mozilla_deepspeech
+=>if service = mozilla_deepspeech
+
 ```ruby
-SpeechToText::MozillaDeepspeechS2T.mozilla_speech_to_text(published_files,recordID,model_path)
+#example values
+ audio = "/home/bbb/audio.wav" #audio should be in wav format
+ server_url = "http://localhost:4000"
+
+#function will make a http post request to server_url/deepspeech/createjob
+jobID = SpeechToText::MozillaDeepspeechS2T.create_job(audio,server_url,jobdetails_json)
+
+#function will make a http get request to server_url/deepspeech/checkstatus/"<jobID>"
+status = SpeechToText::MozillaDeepspeechS2T.checkstatus(jobID,server_url)
+
+#only if status == "completed"
+data = SpeechToText::MozillaDeepspeechS2T.order_transcript(jobID,server_url)
+myarray = SpeechToText::MozillaDeepspeechS2T.create_mozilla_array(data)
 ```
 
-if service = speechmatics
+=>if service = speechmatics
+
 ```ruby
-SpeechToText::SpeechmaticsS2T.speechmatics_speech_to_text(published_files,recordID,userID, apiKey)
+#example values
+  audio_file_path = "/home/bbb"
+  audio_name = "audio"
+  audio_content_type = "mp3"
+  userID = "12345"  #provided by speechmetics
+  authKey = "<authKey>" #provided by speechmatics
+  jobID_json_file = "/home/bbb/audio/jobid.json" #method will create json file with job details
+  model = "en-US" #check this for model:https://github.com/silentflameCR/text-track-service
+
+jobID = SpeechToText::SpeechmaticsS2T.create_job(audio_file_path,audio_name,audio_content_type,userID,authKey,model,jobID_json_file)
+wait_time = SpeechToText::SpeechmaticsS2T.check_job(userID,jobID,authKey)
+#if wait_time is nil
+data = SpeechToText::SpeechmaticsS2T.get_transcription(userID,jobID,authKey)
+myarray = SpeechToText::SpeechmaticsS2T.create_array_speechmatic data
 ```
 
-NOTE:
-you can use this gemfile only if you have following directory structure.
-{published_files_path}/{recordID}/video
-where published_files_path could be any path
-and recordID could be any folder and should be inside the published_files_path.
-Your recordID folder will contain "video" folder which has video.mp4 file inside "video" folder.
-Full videopath: {published_files_path}/{recordID}/video/video.mp4
+=>if service = 3playmedia,
 
+```ruby
+#example values,
+  audio = "/home/bbb/audio.mp3"
+  name = "test1"
+  api_Key = "<a_id_Key>" #provided by 3playmedia
+  turnaround_level_id = 5 #could be any number between 1 to 6. simply means the level of priority. 1 means lowest priority.
+  output_format_id = 139 #use 139 for vtt file and 7 for srt file
+  jobID_json_file = "/home/bbb/audio/jobid.json" #method will create json file with job details
+  vtt_file = "/home/bbb/vttfile.vtt"
+
+job_id = SpeechToText::ThreePlaymediaS2T.create_job(api_key,audio_file,name,jobID_json_file)
+transcript_id = SpeechToText::ThreePlaymediaS2T.order_transcript(api_key,job_id,turnaround_level_id)
+status = SpeechToText::ThreePlaymediaS2T.check_status(api_key,transcript_id)
+SpeechToText::ThreePlaymediaS2T.get_vttfile(api_key,output_format_id,transcript_id,vtt_file)
+```
+
+
+Final step:
+once you get the myarray, you can execute command to create vtt file
+
+```ruby
+#example values
+vtt_file_path = "/home/bbb"
+vtt_file_name = "vttfile.vtt"
+
+SpeechToText::Util.write_to_webvtt(vtt_file_path,vtt_file_name,myarray)
+```
+
+NOTE: if you choose 3playmedia then you don't need to create myarray, you will directly get the vtt file
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
