@@ -64,7 +64,6 @@ module SpeechToText
 		  # construct a new operation object from the id
 			speech = Google::Cloud::Speech.new(version: :v1p1beta1)
 		  operation2 = speech.get_operation  operation_name
-		  operation2.wait_until_done!
 		  return operation2.results
 		end
 
