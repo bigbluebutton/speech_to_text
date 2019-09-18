@@ -42,6 +42,7 @@ module SpeechToText
 			storage = Google::Cloud::Storage.new project_id: bucket_name
 			bucket  = storage.bucket bucket_name
 			file = bucket.create_file audio_file, "#{audio_name}.#{audio_content_type}"
+			return file
 		end
 
 
@@ -64,6 +65,7 @@ module SpeechToText
 		  # construct a new operation object from the id
 			speech = Google::Cloud::Speech.new(version: :v1p1beta1)
 		  operation2 = speech.get_operation  operation_name
+			operation2.wait_until_done!
 		  return operation2.results
 		end
 
