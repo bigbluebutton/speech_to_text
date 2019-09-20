@@ -43,7 +43,6 @@ module SpeechToText
 			file = bucket.create_file audio_file, "#{audio_name}.#{audio_content_type}"
 		end
 
-
 		def self.create_job(audio_name,audio_content_type,bucket_name,language_code)
 		  speech = Google::Cloud::Speech.new(version: :v1p1beta1)
 
@@ -63,7 +62,19 @@ module SpeechToText
 		  # construct a new operation object from the id
 			speech = Google::Cloud::Speech.new(version: :v1p1beta1)
 		  operation2 = speech.get_operation  operation_name
-		  return operation2.done?
+
+			if operation2.error?
+				status = 'failed'
+				return status
+			end
+
+			if operation2.done?
+				status = 'completed'
+				return status
+			end
+
+			status = 'inProgress'
+		  return status
 		end
 
 		def self.get_words(operation_name)
