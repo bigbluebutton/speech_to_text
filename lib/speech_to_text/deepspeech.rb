@@ -19,18 +19,18 @@ module SpeechToText
 			system(request)
 			file = File.open(jobdetails_json,"r")
 			data = JSON.load file
-			return data["jobID"]
+			return data["job_id"]
 		end
 
-		def self.checkstatus(jobID,server_url)
-			uri = URI.parse("#{server_url}/deepspeech/checkstatus/#{jobID}")
+		def self.checkstatus(job_id,server_url)
+			uri = URI.parse("#{server_url}/deepspeech/checkstatus/#{job_id}")
       response = Net::HTTP.get_response(uri)
 			data = JSON.load response.body
 			return data["status"]
 		end
 
-		def self.order_transcript(jobID,server_url)
-			uri = URI.parse("#{server_url}/deepspeech/transcript/#{jobID}")
+		def self.order_transcript(job_id,server_url)
+			uri = URI.parse("#{server_url}/deepspeech/transcript/#{job_id}")
       response = Net::HTTP.get_response(uri)
 			data = JSON.load response.body
 			return data

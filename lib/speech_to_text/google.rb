@@ -35,7 +35,6 @@ module SpeechToText
 		def self.set_environment(auth_file)
 		  ENV['GOOGLE_APPLICATION_CREDENTIALS'] = auth_file
 		end
-
 		#uploads audio file to a google bucket
 		def self.google_storage(audio_file_path,audio_name,audio_content_type,bucket_name)
 		  audio_file = "#{audio_file_path}/#{audio_name}.#{audio_content_type}"
@@ -43,7 +42,6 @@ module SpeechToText
 			bucket  = storage.bucket bucket_name
 			file = bucket.create_file audio_file, "#{audio_name}.#{audio_content_type}"
 		end
-
 
 		def self.create_job(audio_name,audio_content_type,bucket_name,language_code)
 		  speech = Google::Cloud::Speech.new(version: :v1p1beta1)
@@ -60,13 +58,32 @@ module SpeechToText
 		  return operation.name
 		end
 
-		def self.check_job(operation_name)
+		def self.check_status(operation_name)
 		  # construct a new operation object from the id
 			speech = Google::Cloud::Speech.new(version: :v1p1beta1)
 		  operation2 = speech.get_operation  operation_name
-		  operation2.wait_until_done!
+
+			if operation2.error?
+				status = 'failed'
+				return status
+			end
+
+			if operation2.done?
+				status = 'completed'
+				return status
+			end
+
+			status = 'inProgress'
+		  return status
+		end
+
+		def self.get_words(operation_name)
+		  # construct a new operation object from the id
+			speech = Google::Cloud::Speech.new(version: :v1p1beta1)
+		  operation2 = speech.get_operation  operation_name
 		  return operation2.results
 		end
+
 
 		def self.delete_google_storage(bucket_name,audio_name,audio_content_type)
 			storage = Google::Cloud::Storage.new project_id: bucket_name

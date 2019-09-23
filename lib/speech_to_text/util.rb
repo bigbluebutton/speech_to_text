@@ -37,7 +37,9 @@ module SpeechToText
     end
 
 		#create and write the webvtt file
-		def self.write_to_webvtt(vtt_file_path,vtt_file_name,myarray)
+		def self.write_to_webvtt(vtt_file_path:,
+                             vtt_file_name:,
+                             myarray:)
 
 		  filename = "#{vtt_file_path}/#{vtt_file_name}"
 		  file = File.open(filename,"w")
@@ -73,6 +75,16 @@ module SpeechToText
 
       file.close
 		end
+
+    def self.captions_json(file_path:,
+                           file_name:,
+                           localeName:,
+                           locale:)
+      captions_file_name = "#{file_path}/#{file_name}"
+		  captions_file = File.open(captions_file_name,"w")
+		  captions_file.puts "[{\"localeName\": \"#{localeName}\", \"locale\": \"#{locale}\"}]"
+      captions_file.close
+    end
 
     def self.recording_json(file_path:,
                             record_id:,
