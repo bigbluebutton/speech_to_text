@@ -121,13 +121,13 @@ module SpeechToText
                             **duration)
       # rubocop:enable Metrics/ParameterLists
       if duration.empty?
-        video_to_audio_command = "ffmpeg -i #{video_file_path}/#{video_name}.#{video_content_type} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
+        video_to_audio_command = "ffmpeg -y -i #{video_file_path}/#{video_name}.#{video_content_type} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
         system(video_to_audio_command.to_s)
       elsif duration.length == 1
-        video_to_audio_command = "ffmpeg -ss #{0.to_i} -i #{video_file_path}/#{video_name}.#{video_content_type} -t #{duration.values[0]} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
+        video_to_audio_command = "ffmpeg -y -ss #{0.to_i} -i #{video_file_path}/#{video_name}.#{video_content_type} -t #{duration.values[0]} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
         system(video_to_audio_command.to_s)  
       else 
-        video_to_audio_command = "ffmpeg -ss #{duration.values[0]} -i #{video_file_path}/#{video_name}.#{video_content_type} -t #{duration.values[1]} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
+        video_to_audio_command = "ffmpeg -y -ss #{duration.values[0]} -i #{video_file_path}/#{video_name}.#{video_content_type} -t #{duration.values[1]} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
         system(video_to_audio_command.to_s)  
       end
         

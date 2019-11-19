@@ -33,7 +33,11 @@ SpeechToText::Util.video_to_audio(video_file_path:"/home/abc/xyz",
                                   video_content_type: "mp4",
                                   audio_file_path:"/home/bbb",
                                   audio_name:"audio",
-                                  audio_content_type:"mp3")
+                                  audio_content_type:"mp3",
+                                  start_time: '0',
+                                  duration: '20')
+
+#start_time and duration are optional parameters
 ```
 STEP 2. Get array using any service given below
 
@@ -51,32 +55,7 @@ job_id = SpeechToText::IbmWatsonS2T.create_job(audio_file_path:"/home/bbb",
                                                 apikey:"<apikey>",
                                                 audio:"audio",
                                                 content_type:"mp3",
-                                                language_code:"en-US",
-                                                model: nil,
-                                                callback_url: nil,
-                                                events: nil,
-                                                user_token: nil,
-                                                results_ttl: nil,
-                                                language_customization_id: nil,
-                                                acoustic_customization_id: nil,
-                                                base_model_version: nil,
-                                                customization_weight: nil,
-                                                inactivity_timeout: nil,
-                                                keywords: nil,
-                                                keywords_threshold: nil,
-                                                max_alternatives: nil,
-                                                word_alternatives_threshold: nil,
-                                                word_confidence: nil,
-                                                timestamps: nil,
-                                                profanity_filter: nil,
-                                                smart_formatting: nil,
-                                                speaker_labels: nil,
-                                                customization_id: nil,
-                                                grammar_name: nil,
-                                                redaction: nil,
-                                                processing_metrics: nil,
-                                                processing_metrics_interval: nil,
-                                                audio_metrics: nil)
+                                                language_code:"en-US")
 
 data = SpeechToText::IbmWatsonS2T.check_job(job_id,apikey)
 myarray = SpeechToText::IbmWatsonS2T.create_array_watson(data["results"][0])
@@ -181,7 +160,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 NOTE : After your changes execute this commands
 1. Build your gem file : 'gem build speech_to_text.gemspec'
-2. Install your gem file : 'gem install speech_to_text-0.1.1.gem'                  //replace the version number
+2. Install your gem file : 'gem install speech_to_text-0.1.2.gem'                  //replace the version number
 3. 'bundle install'                                                                //optional command
 
 ## Contributing
