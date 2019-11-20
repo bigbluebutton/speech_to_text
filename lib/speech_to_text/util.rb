@@ -126,14 +126,14 @@ module SpeechToText
       if duration.empty?
         video_to_audio_command = "ffmpeg -y -i #{video_file_path}/#{video_name}.#{video_content_type} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
         system(video_to_audio_command.to_s)
-      elsif duration[:start_time].nil? && duration[:duration] != nil
-        video_to_audio_command = "ffmpeg -y -ss #{0.to_i} -i #{video_file_path}/#{video_name}.#{video_content_type} -t #{duration[:duration]} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
+      elsif duration[:start_time].nil? && duration[:end_time] != nil
+        video_to_audio_command = "ffmpeg -y -ss #{0.to_i} -i #{video_file_path}/#{video_name}.#{video_content_type} -t #{duration[:end_time]} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
         system(video_to_audio_command.to_s)
-      elsif duration[:duration].nil? && duration[:start_time] != nil
+      elsif duration[:end_time].nil? && duration[:start_time] != nil
         video_to_audio_command = "ffmpeg -y -ss #{duration[:start_time]} -i #{video_file_path}/#{video_name}.#{video_content_type} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
         system(video_to_audio_command.to_s) 
       else
-        video_to_audio_command = "ffmpeg -y -ss #{duration[:start_time]} -i #{video_file_path}/#{video_name}.#{video_content_type} -to #{duration[:duration]} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
+        video_to_audio_command = "ffmpeg -y -ss #{duration[:start_time]} -i #{video_file_path}/#{video_name}.#{video_content_type} -to #{duration[:end_time]} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
         system(video_to_audio_command.to_s) 
       end
         
