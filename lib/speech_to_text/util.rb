@@ -36,8 +36,10 @@ module SpeechToText
     # rubocop:disable Metrics/MethodLength
     def self.write_to_webvtt(vtt_file_path:, # rubocop:disable Metrics/AbcSize
                              vtt_file_name:,
-                             myarray:)
+                             myarray:,
+                             start_time:)
 
+      start_time = start_time.to_i
       filename = "#{vtt_file_path}/#{vtt_file_name}"
       file = File.open(filename, 'w')
       file.puts "WEBVTT\n\n"
@@ -47,12 +49,12 @@ module SpeechToText
 
         file.puts i / 30 + 1
         if i + 28 < myarray.length
-          file.puts "#{seconds_to_timestamp myarray[i]} --> #{seconds_to_timestamp myarray[i + 28]}"
+          file.puts "#{seconds_to_timestamp (myarray[i] + start_time).to_i} --> #{seconds_to_timestamp (myarray[i + 28] + start_time).to_i}"
           file.puts "#{myarray[i + 2]} #{myarray[i + 5]} #{myarray[i + 8]} #{myarray[i + 11]} #{myarray[i + 14]}"
           file.puts "#{myarray[i + 17]} #{myarray[i + 20]} #{myarray[i + 23]} #{myarray[i + 26]} #{myarray[i + 29]}\n\n"
         else
           remainder = myarray.length - i
-          file.puts "#{seconds_to_timestamp myarray[i]} --> #{seconds_to_timestamp myarray[myarray.length - 2]}"
+          file.puts "#{seconds_to_timestamp (myarray[i] + start_time).to_i} --> #{seconds_to_timestamp (myarray[myarray.length - 2] + start_time).to_i}"
           count = 0
           flag = true
           while count < remainder
