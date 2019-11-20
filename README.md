@@ -148,7 +148,7 @@ once you get the myarray, you can execute command to create vtt file
 vtt_file_path = "/home/bbb"
 vtt_file_name = "vttfile.vtt"
 
-SpeechToText::Util.write_to_webvtt(vtt_file_path,vtt_file_name,myarray)
+SpeechToText::Util.write_to_webvtt(vtt_file_path: "vtt_file_path", vtt_file_name: "vtt_file_name", myarray: myarray, start_time: "5")
 ```
 
 NOTE: if you choose 3playmedia then you don't need to create myarray, you will directly get the vtt file
