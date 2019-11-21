@@ -11,6 +11,7 @@
 require 'json'
 require 'net/http'
 require 'uri'
+require 'open3'
 require_relative 'util.rb'
 
 module SpeechToText
@@ -19,7 +20,18 @@ module SpeechToText
 
     def self.create_job(audio, server_url, jobdetails_json)
       request = "curl -F \"file=@#{audio}\" \"#{server_url}/deepspeech/createjob\" > #{jobdetails_json}"
-      system(request)
+      Open3.popen2e(request) do |stdin, stdout_err, wait_thr|
+        while line = stdout_err.gets
+          puts "#{line}"
+        end
+
+        exit_status = wait_thr.value
+        unless exit_status.success?
+          puts '---------------------------------------------------------------------------'
+          puts "FAILED to execute --> #{request}"
+          puts '---------------------------------------------------------------------------'
+        end
+      end
       file = File.open(jobdetails_json, 'r')
       data = JSON.load file
       data['job_id']
