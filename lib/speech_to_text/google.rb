@@ -70,18 +70,15 @@ module SpeechToText
       # construct a new operation object from the id
       speech = Google::Cloud::Speech.new(version: :v1p1beta1)
       operation2 = speech.get_operation operation_name
+      status = 'not found'
       if operation2.error?
         status = 'failed'
-        return status
-      end
-
-      if operation2.done?
+      elsif operation2.done?
         status = 'completed'
-        return status
+      else
+        status = 'inProgress'  
       end
-
-      status = 'inProgress'
-      status
+      return status
     end
 
     def self.get_words(operation_name)

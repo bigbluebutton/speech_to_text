@@ -8,6 +8,7 @@
 #
 # Copyright (c) 2019 BigBlueButton Inc. and by respective authors (see below).
 #
+require 'open3'
 
 module SpeechToText
   module Util # rubocop:disable Style/Documentation
@@ -122,21 +123,34 @@ module SpeechToText
                             audio_content_type:,
                             **duration)
       # rubocop:enable Metrics/ParameterLists
-        
+      video_to_audio_command = ''
       if duration.empty?
         video_to_audio_command = "ffmpeg -y -i #{video_file_path}/#{video_name}.#{video_content_type} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
-        system(video_to_audio_command.to_s)
       elsif duration[:start_time].nil? && duration[:end_time] != nil
         video_to_audio_command = "ffmpeg -y -ss #{0.to_i} -i #{video_file_path}/#{video_name}.#{video_content_type} -t #{duration[:end_time]} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
-        system(video_to_audio_command.to_s)
       elsif duration[:end_time].nil? && duration[:start_time] != nil
         video_to_audio_command = "ffmpeg -y -ss #{duration[:start_time]} -i #{video_file_path}/#{video_name}.#{video_content_type} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
-        system(video_to_audio_command.to_s) 
       else
-        video_to_audio_command = "ffmpeg -y -ss #{duration[:start_time]} -i #{video_file_path}/#{video_name}.#{video_content_type} -to #{duration[:end_time]} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
-        system(video_to_audio_command.to_s) 
-      end
-        
+        video_to_audio_command = "ffmpeg -y -t #{duration[:end_time]} -i #{video_file_path}/#{video_name}.#{video_content_type} -ss #{duration[:start_time]} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
+      end  
+
+        Open3.popen2e(video_to_audio_command) do |stdin, stdout_err, wait_thr|
+          while line = stdout_err.gets
+            puts "#{line}"
+          end
+
+          exit_status = wait_thr.value
+          unless exit_status.success?
+            puts '---------------------'
+            puts "FAILED to execute --> #{video_to_audio_command}"
+            puts '---------------------'
+          end
+        end
+
+        #Open3.popen3(video_to_audio_command.to_s) do |stdin, stdout, stderr, wait_thr|
+        #  puts "stdout is:" + stdout.read
+        #  puts "stderr is:" + stderr.read
+        #end
     end
   end
 end

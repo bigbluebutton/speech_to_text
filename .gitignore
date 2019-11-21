@@ -7,3 +7,8 @@
 /spec/reports/
 /tmp/
 *.gem
+*.mp3
+*.mp4
+*.webm
+*.wav
+*.flac

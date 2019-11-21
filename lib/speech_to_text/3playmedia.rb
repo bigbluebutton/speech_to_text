@@ -11,12 +11,24 @@
 require 'json'
 require 'net/http'
 require 'uri'
+require 'open3'
 
 module SpeechToText
   module ThreePlaymediaS2T # rubocop:disable Style/Documentation
     def self.create_job(api_key, audio_file, name, create_job_file)
       cretae_job_command = "curl -X POST -F \"source_file=@#{audio_file}\" \"https://api.3playmedia.com/v3/files?api_key=#{api_key}&language_id=1&name=#{name}\" > #{create_job_file}"
-      system(cretae_job_command)
+      Open3.popen2e(cretae_job_command) do |stdin, stdout_err, wait_thr|
+        while line = stdout_err.gets
+          puts "#{line}"
+        end
+
+        exit_status = wait_thr.value
+        unless exit_status.success?
+          puts '---------------------'
+          puts "FAILED to execute --> #{cretae_job_command}"
+          puts '---------------------'
+        end
+      end
       file = File.open(create_job_file, 'r')
       response = JSON.load file
       job_id = response['data']['id']
