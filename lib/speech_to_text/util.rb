@@ -123,7 +123,7 @@ module SpeechToText
                             audio_content_type:,
                             **duration)
       # rubocop:enable Metrics/ParameterLists
-        
+      video_to_audio_command = ''
       if duration.empty?
         video_to_audio_command = "ffmpeg -y -i #{video_file_path}/#{video_name}.#{video_content_type} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
       elsif duration[:start_time].nil? && duration[:end_time] != nil
