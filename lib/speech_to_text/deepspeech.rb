@@ -20,6 +20,7 @@ module SpeechToText
 
     def self.create_job(audio, server_url, jobdetails_json)
       request = "curl -F \"file=@#{audio}\" \"#{server_url}/deepspeech/createjob\" > #{jobdetails_json}"
+      
       Open3.popen2e(request) do |stdin, stdout_err, wait_thr|
         while line = stdout_err.gets
           puts "#{line}"
@@ -27,11 +28,12 @@ module SpeechToText
 
         exit_status = wait_thr.value
         unless exit_status.success?
-          puts '---------------------------------------------------------------------------'
+          puts '---------------------'
           puts "FAILED to execute --> #{request}"
-          puts '---------------------------------------------------------------------------'
+          puts '---------------------'
         end
       end
+
       file = File.open(jobdetails_json, 'r')
       data = JSON.load file
       data['job_id']
@@ -54,7 +56,20 @@ module SpeechToText
     # used by deepspeech server only
     def self.generate_transcript(audio, json_file, model_path)
       deepspeech_command = "#{model_path}/deepspeech --model #{model_path}/models/output_graph.pbmm --alphabet #{model_path}/models/alphabet.txt --lm #{model_path}/models/lm.binary --trie #{model_path}/models/trie -e --audio #{audio} > #{json_file}"
-      system(deepspeech_command.to_s)
+      
+      Open3.popen2e(deepspeech_command) do |stdin, stdout_err, wait_thr|
+        while line = stdout_err.gets
+          puts "#{line}"
+        end
+
+        exit_status = wait_thr.value
+        unless exit_status.success?
+          puts '---------------------'
+          puts "FAILED to execute --> #{deepspeech_command}"
+          puts '---------------------'
+        end
+      end
+
     end
 
     # rubocop:disable Metrics/MethodLength

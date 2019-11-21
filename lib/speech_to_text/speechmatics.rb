@@ -12,6 +12,7 @@ require_relative 'util.rb'
 require 'net/http'
 require 'uri'
 require 'json'
+require 'open3'
 
 module SpeechToText
   module SpeechmaticsS2T # rubocop:disable Style/Documentation
@@ -24,7 +25,20 @@ module SpeechToText
       # rubocop:enable Metrics/ParameterLists
       # rubocop:enable Naming/VariableName
       upload_audio = "curl -F data_file=@#{audio_file_path}/#{audio_name}.#{audio_content_type} -F model=#{model} \"https://api.speechmatics.com/v1.0/user/#{userID}/jobs/?auth_token=#{authKey}\" > #{jobID_json_file}"
-      system(upload_audio.to_s)
+      
+      Open3.popen2e(upload_audio) do |stdin, stdout_err, wait_thr|
+        while line = stdout_err.gets
+          puts "#{line}"
+        end
+
+        exit_status = wait_thr.value
+        unless exit_status.success?
+          puts '---------------------'
+          puts "FAILED to execute --> #{upload_audio}"
+          puts '---------------------'
+        end
+      end
+
       file = File.open(jobID_json_file)
       data = JSON.load file
       jobID = data['id'] # rubocop:disable Naming/VariableName

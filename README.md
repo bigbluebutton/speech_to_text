@@ -79,7 +79,7 @@ bucket_name could be any string
 
 file = SpeechToText::GoogleS2T.google_storage(audio_file_path,audio_name,audio_content_type,bucket_name)
 operation_name = SpeechToText::GoogleS2T.create_job(audio_name,audio_content_type,bucket_name,language_code)
-data = SpeechToText::GoogleS2T.check_job(operation_name)
+data = SpeechToText::GoogleS2T.check_status(operation_name)
 myarray = SpeechToText::GoogleS2T.create_array_google(data["results"])
 SpeechToText::GoogleS2T.delete_google_storage(bucket_name,audio_name,audio_content_type)
 ```

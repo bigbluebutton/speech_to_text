@@ -141,9 +141,9 @@ module SpeechToText
 
           exit_status = wait_thr.value
           unless exit_status.success?
-            puts '---------------------------------------------------------------------------'
+            puts '---------------------'
             puts "FAILED to execute --> #{video_to_audio_command}"
-            puts '---------------------------------------------------------------------------'
+            puts '---------------------'
           end
         end
 
