@@ -8,6 +8,7 @@
 #
 # Copyright (c) 2019 BigBlueButton Inc. and by respective authors (see below).
 #
+require 'open3'
 
 module SpeechToText
   module Util # rubocop:disable Style/Documentation
@@ -134,7 +135,11 @@ module SpeechToText
         system(video_to_audio_command.to_s) 
       else
         video_to_audio_command = "ffmpeg -y -t #{duration[:end_time]} -i #{video_file_path}/#{video_name}.#{video_content_type} -ss #{duration[:start_time]} -ac 1 -ar 16000 #{audio_file_path}/#{audio_name}.#{audio_content_type}"
-        system(video_to_audio_command.to_s) 
+        #system(video_to_audio_command.to_s) 
+        Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
+          puts "stdout is:" + stdout.read
+          puts "stderr is:" + stderr.read
+        end
       end
         
     end
