@@ -37,42 +37,35 @@ module SpeechToText
     # rubocop:disable Metrics/MethodLength
     def self.write_to_webvtt(vtt_file_path:, # rubocop:disable Metrics/AbcSize
                              vtt_file_name:,
-                             myarray:,
+                             text_array:,
                              start_time:)
 
       start_time = start_time.to_i
       filename = "#{vtt_file_path}/#{vtt_file_name}"
       file = File.open(filename, 'w')
-      file.puts "WEBVTT\n\n"
+      file.print "WEBVTT"
 
-      i = 0
-      while i < myarray.length
-
-        file.puts i / 30 + 1
-        if i + 28 < myarray.length
-          file.puts "#{seconds_to_timestamp (myarray[i] + start_time).to_i} --> #{seconds_to_timestamp (myarray[i + 28] + start_time).to_i}"
-          file.puts "#{myarray[i + 2]} #{myarray[i + 5]} #{myarray[i + 8]} #{myarray[i + 11]} #{myarray[i + 14]}"
-          file.puts "#{myarray[i + 17]} #{myarray[i + 20]} #{myarray[i + 23]} #{myarray[i + 26]} #{myarray[i + 29]}\n\n"
-        else
-          remainder = myarray.length - i
-          file.puts "#{seconds_to_timestamp (myarray[i] + start_time).to_i} --> #{seconds_to_timestamp (myarray[myarray.length - 2] + start_time).to_i}"
-          count = 0
-          flag = true
-          while count < remainder
-            file.print "#{myarray[i + 2]} "
-            if flag # rubocop:disable Metrics/BlockNesting
-              # rubocop:disable Metrics/BlockNesting
-              if count > 9
-                file.print "\n"
-                flag = false
-              end
-              # rubocop:enable Metrics/BlockNesting
-            end
-            i += 3
-            count += 3
+      i = counter = 0
+      while i < text_array.length
+       
+        if i%3 == 2
+          if i%30 == 17
+            file.puts
           end
+          file.print "#{text_array[i]} "
+        elsif i%30 == 0
+          counter += 1
+          file.puts "\n\n"
+          file.puts counter
+          file.print "#{seconds_to_timestamp(text_array[i] + start_time)} "
+          if i + 28 < text_array.length
+            file.puts "--> #{seconds_to_timestamp(text_array[i+28] + start_time)}"
+          else
+            file.puts "--> #{seconds_to_timestamp(text_array[text_array.length - 2] + start_time)}"
+          end
+        else          
         end
-        i += 30
+        i += 1
       end
 
       file.close
