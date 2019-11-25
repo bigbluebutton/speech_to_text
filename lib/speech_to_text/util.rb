@@ -32,47 +32,60 @@ module SpeechToText
       "#{hh}:#{mm}:#{ss}"
     end
     # rubocop:enable Metrics/MethodLength
-
     # create and write the webvtt file
     # rubocop:disable Metrics/MethodLength
     def self.write_to_webvtt(vtt_file_path:, # rubocop:disable Metrics/AbcSize
                              vtt_file_name:,
-                             myarray:,
+                             text_array:,
                              start_time:)
+      # Array format 
+      # text_array = [start_timestamp, end_timestamp, word, start_time, end_time, word, ...]
+      
+      # if we cut first few minutes from the audio then 
+      # start time will be replaced instead of 0
+      start_time = start_time.to_i 
 
-      start_time = start_time.to_i
       filename = "#{vtt_file_path}/#{vtt_file_name}"
       file = File.open(filename, 'w')
-      file.puts "WEBVTT\n\n"
+      file.print "WEBVTT"
 
-      i = 0
-      while i < myarray.length
+      i = block_number = 0
+      
+      #all the words are at position [2,5,8,11...]
+      word_index = 2  
 
-        file.puts i / 30 + 1
-        if i + 28 < myarray.length
-          file.puts "#{seconds_to_timestamp (myarray[i] + start_time).to_i} --> #{seconds_to_timestamp (myarray[i + 28] + start_time).to_i}"
-          file.puts "#{myarray[i + 2]} #{myarray[i + 5]} #{myarray[i + 8]} #{myarray[i + 11]} #{myarray[i + 14]}"
-          file.puts "#{myarray[i + 17]} #{myarray[i + 20]} #{myarray[i + 23]} #{myarray[i + 26]} #{myarray[i + 29]}\n\n"
-        else
-          remainder = myarray.length - i
-          file.puts "#{seconds_to_timestamp (myarray[i] + start_time).to_i} --> #{seconds_to_timestamp (myarray[myarray.length - 2] + start_time).to_i}"
-          count = 0
-          flag = true
-          while count < remainder
-            file.print "#{myarray[i + 2]} "
-            if flag # rubocop:disable Metrics/BlockNesting
-              # rubocop:disable Metrics/BlockNesting
-              if count > 9
-                file.print "\n"
-                flag = false
-              end
-              # rubocop:enable Metrics/BlockNesting
-            end
-            i += 3
-            count += 3
+      # one block will give total 10 words on screen at a time
+      # which contains total 30 index 
+      # each word has 3 indexes in text_array [start_timestamp, end_timestamp, word,...]
+      block_size = 30
+
+      # each block contains 10 words index range o to 29
+      # last end time will be at index = 28
+      end_timestamp = 28
+
+      # we need new lines after every 5 words so 6th word will be at index = 17 (6*3 - 1) 
+      line_space_index = 17 
+
+      while i < text_array.length
+       
+        if i%3 == word_index  #if index has word then print word
+          if i%block_size == line_space_index # if this is 6th word then print new line
+            file.puts
           end
+          file.print "#{text_array[i]} "
+        elsif i%block_size == 0  #if index is 0,30,60... means starting a new block
+          block_number += 1
+          file.puts "\n\n"
+          file.puts block_number  #print block number 
+          file.print "#{seconds_to_timestamp(text_array[i] + start_time)} "  #print start timestamps
+          if i + end_timestamp < text_array.length  # End timestamp will be at 28th index in block of 30 indexes (10 words)
+            file.puts "--> #{seconds_to_timestamp(text_array[i+end_timestamp] + start_time)}"
+          else  # For last block, there will not be total 30 indexes, so end timestamp will be second last index
+            file.puts "--> #{seconds_to_timestamp(text_array[text_array.length - 2] + start_time)}"
+          end
+        else          
         end
-        i += 30
+        i += 1
       end
 
       file.close
