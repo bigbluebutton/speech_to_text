@@ -39,28 +39,49 @@ module SpeechToText
                              vtt_file_name:,
                              text_array:,
                              start_time:)
+      # Array format 
+      # text_array = [start_timestamp, end_timestamp, word, start_time, end_time, word, ...]
+      
+      # if we cut first few minutes from the audio then 
+      # start time will be replaced instead of 0
+      start_time = start_time.to_i 
 
-      start_time = start_time.to_i
       filename = "#{vtt_file_path}/#{vtt_file_name}"
       file = File.open(filename, 'w')
       file.print "WEBVTT"
 
-      i = counter = 0
+      i = block_number = 0
+
+      #all the words are at position [2,5,8,11...]
+      WORD_INDEX = 2  
+
+      # one block will give total 10 words on screen at a time
+      # which contains total 30 index 
+      # each word has 3 indexes in text_array [start_timestamp, end_timestamp, word,...]
+      BLOCK_SIZE = 30
+
+      # each block contains 10 words index range o to 29
+      # last end time will be at index = 28
+      END_TIMESTAMP = 28
+
+      # we need new lines after every 5 words so 6th word will be at index = 17 (6*3 - 1) 
+      LINE_SPACE_INDEX = 17 
+
       while i < text_array.length
        
-        if i%3 == 2
-          if i%30 == 17
+        if i%3 == WORD_INDEX  #if index has word then print word
+          if i%BLOCK_SIZE == LINE_SPACE_INDEX # if this is 6th word then print new line
             file.puts
           end
           file.print "#{text_array[i]} "
-        elsif i%30 == 0
-          counter += 1
+        elsif i%BLOCK_SIZE == 0  #if index is 0,30,60... means starting a new block
+          block_number += 1
           file.puts "\n\n"
-          file.puts counter
-          file.print "#{seconds_to_timestamp(text_array[i] + start_time)} "
-          if i + 28 < text_array.length
-            file.puts "--> #{seconds_to_timestamp(text_array[i+28] + start_time)}"
-          else
+          file.puts block_number  #print block number 
+          file.print "#{seconds_to_timestamp(text_array[i] + start_time)} "  #print start timestamps
+          if i + END_TIMESTAMP < text_array.length  # End timestamp will be at 28th index in block of 30 indexes (10 words)
+            file.puts "--> #{seconds_to_timestamp(text_array[i+END_TIMESTAMP] + start_time)}"
+          else  # For last block, there will not be total 30 indexes, so end timestamp will be second last index
             file.puts "--> #{seconds_to_timestamp(text_array[text_array.length - 2] + start_time)}"
           end
         else          
