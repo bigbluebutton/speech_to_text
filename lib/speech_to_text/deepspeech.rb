@@ -18,8 +18,8 @@ module SpeechToText
   module MozillaDeepspeechS2T # rubocop:disable Style/Documentation
     include Util
 
-    def self.create_job(audio, server_url, jobdetails_json)
-      request = "curl -F \"file=@#{audio}\" \"#{server_url}/deepspeech/createjob\" > #{jobdetails_json}"
+    def self.create_job(audio, server_url, jobdetails_json, api_key)
+      request = "curl -F \"file=@#{audio}\" \"#{server_url}/deepspeech/createjob/#{api_key}\" > #{jobdetails_json}"
       
       Open3.popen2e(request) do |stdin, stdout_err, wait_thr|
         while line = stdout_err.gets
@@ -39,16 +39,32 @@ module SpeechToText
       data['job_id']
     end
 
-    def self.checkstatus(job_id, server_url)
-      uri = URI.parse("#{server_url}/deepspeech/checkstatus/#{job_id}")
-      response = Net::HTTP.get_response(uri)
+    def self.checkstatus(job_id, server_url, api_key)
+      uri = URI.parse("#{server_url}/deepspeech/checkstatus/#{job_id}/#{api_key}")
+      request = Net::HTTP::Post.new(uri)
+
+      req_options = {
+        use_ssl: uri.scheme == "https",
+      }
+
+      response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+        http.request(request)
+      end
       data = JSON.load response.body
       data['status']
     end
 
-    def self.order_transcript(job_id, server_url)
-      uri = URI.parse("#{server_url}/deepspeech/transcript/#{job_id}")
-      response = Net::HTTP.get_response(uri)
+    def self.order_transcript(job_id, server_url, api_key)
+      uri = URI.parse("#{server_url}/deepspeech/transcript/#{job_id}/#{api_key}")
+      request = Net::HTTP::Post.new(uri)
+
+      req_options = {
+        use_ssl: uri.scheme == "https",
+      }
+
+      response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+        http.request(request)
+      end
       data = JSON.load response.body
       data
     end
