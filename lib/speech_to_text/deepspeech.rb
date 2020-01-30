@@ -73,19 +73,9 @@ module SpeechToText
     def self.generate_transcript(audio, json_file, model_path)
       #deepspeech_command = "#{model_path}/deepspeech --model #{model_path}/models/output_graph.pbmm --alphabet #{model_path}/models/alphabet.txt --lm #{model_path}/models/lm.binary --trie #{model_path}/models/trie -e --audio #{audio} > #{json_file}"
       deepspeech_command = "deepspeech --json --model #{model_path}/deepspeech-0.6.1-models/output_graph.pbmm --lm #{model_path}/deepspeech-0.6.1-models/lm.binary --trie #{model_path}/deepspeech-0.6.1-models/trie --audio #{audio} > #{json_file}"
-      Open3.popen2e(deepspeech_command) do |stdin, stdout_err, wait_thr|
-        while line = stdout_err.gets
-          puts "#{line}"
-        end
-
-        exit_status = wait_thr.value
-        unless exit_status.success?
-          puts '---------------------'
-          puts "FAILED to execute --> #{deepspeech_command}"
-          puts '---------------------'
-        end
-      end
-
+      puts "Executing deepspeech_command............"
+      system (deepspeech_command)
+      puts "successfully executed deepspeech_command............"
     end
 
     # rubocop:disable Metrics/MethodLength
