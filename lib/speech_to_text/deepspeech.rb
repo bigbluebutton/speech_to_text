@@ -111,8 +111,8 @@ module SpeechToText
       i = 0
       myarray = []
       while i < data['words'].length
-        myarray.push(data['words'][i]['start_time'].to_f)
-        endtime = data['words'][i]['start_time'].to_f + data['words'][i]['duration'].to_f
+        myarray.push(data['words'][i]['start_time '].to_f)
+        endtime = data['words'][i]['start_time '].to_f + data['words'][i]['duration'].to_f
         myarray.push(endtime)
         myarray.push(data['words'][i]['word'])
         i += 1
