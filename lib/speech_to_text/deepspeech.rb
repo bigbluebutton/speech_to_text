@@ -85,7 +85,6 @@ module SpeechToText
           puts '---------------------'
         end
       end
-
     end
 
     # rubocop:disable Metrics/MethodLength
