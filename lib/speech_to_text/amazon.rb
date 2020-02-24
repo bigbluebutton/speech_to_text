@@ -18,6 +18,13 @@ module SpeechToText
   module AmazonS2T
     include Util
 
+    def self.set_credentials(aws_key, aws_secret)
+      Aws.config.update({
+        region: 'us-east-2',
+        credentials: Aws::Credentials.new(aws_key, aws_secret)
+      })
+    end
+
     def self.upload_audio(bucket_name, s3_audio_name, audio_file)
       s3 = Aws::S3::Resource.new
       obj = s3.bucket(bucket_name).object(s3_audio_name)
@@ -37,6 +44,7 @@ module SpeechToText
     end
 
     def self.checkstatus(transcription_job_name)
+      client = Aws::TranscribeService::Client.new
       resp = client.get_transcription_job({
         transcription_job_name: transcription_job_name
       })
@@ -46,13 +54,14 @@ module SpeechToText
     end
 
     def self.get_words(transcription_job_name, json_file)
+      client = Aws::TranscribeService::Client.new
       resp = client.get_transcription_job({
         transcription_job_name: transcription_job_name
       })
 
       uri = resp['transcription_job']['transcript']['transcript_file_uri']
       File.open(json_file, 'wb') do |file|
-         file.write open(url).read
+         file.write open(uri).read
       end
 
       file = File.open(json_file,'r')
@@ -70,13 +79,24 @@ module SpeechToText
       myarray = []
       while (i < data['results']['items'].length)
         unless data['results']['items'][i]['start_time'].nil?
-          myarray.push(data['results']['items'][i]['start_time'])
-          myarray.push(data['results']['items'][i]['end_time'])
+          myarray.push(data['results']['items'][i]['start_time'].to_f)
+          myarray.push(data['results']['items'][i]['end_time'].to_f)
           myarray.push(data['results']['items'][i]['alternatives'][0]['content'])
         end
         i = i + 1
       end
       return myarray
+    end
+
+    def self.delete_audio(bucket_name, s3_audio_name, transcription_job_name)
+      s3 = Aws::S3::Resource.new
+      obj = s3.bucket(bucket_name).object(s3_audio_name)
+      obj.delete
+
+      client = Aws::TranscribeService::Client.new
+      resp = client.delete_transcription_job({
+        transcription_job_name: transcription_job_name
+      })
     end
     
   end
