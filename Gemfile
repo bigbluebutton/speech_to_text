@@ -8,3 +8,5 @@ gemspec
 gem 'google-cloud-speech'
 gem 'google-cloud-storage'
 gem 'ibm_watson'
+gem 'aws-sdk'
+gem 'aws-sdk-transcribestreamingservice'

@@ -7,6 +7,7 @@ require 'speech_to_text/ibm'
 require 'speech_to_text/deepspeech'
 require 'speech_to_text/speechmatics'
 require 'speech_to_text/3playmedia'
+require 'speech_to_text/amazon'
 
 module SpeechToText
   class Error < StandardError; end
