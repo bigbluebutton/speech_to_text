@@ -9,7 +9,8 @@
 # Copyright (c) 2019 BigBlueButton Inc. and by respective authors (see below).
 #
 #require 'aws-sdk-transcribestreamingservice'
-require 'aws-sdk'
+require 'aws-sdk-s3'
+require 'aws-sdk-transcribeservice'
 require 'json'
 require 'open-uri'
 require_relative 'util.rb'
