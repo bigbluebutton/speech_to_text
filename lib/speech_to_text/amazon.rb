@@ -8,7 +8,7 @@
 #
 # Copyright (c) 2019 BigBlueButton Inc. and by respective authors (see below).
 #
-require 'aws-sdk-transcribestreamingservice'
+#require 'aws-sdk-transcribestreamingservice'
 require 'aws-sdk'
 require 'json'
 require 'open-uri'
