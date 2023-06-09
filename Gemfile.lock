@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    speech_to_text (1.0.0)
+    speech_to_text (1.0.1)
       aws-sdk (~> 3.1.0)
       google-cloud-speech (= 0.35.0)
       google-cloud-storage (= 1.18.2)
