@@ -7,8 +7,8 @@ require 'speech_to_text/version'
 Gem::Specification.new do |spec|
   spec.name          = 'speech_to_text'
   spec.version       = SpeechToText::VERSION
-  spec.authors       = ['Richard Alam']
-  spec.email         = ['ritzalam@gmail.com']
+  spec.authors       = ['Richard Alam', 'Parthik Modi']
+  spec.email         = ['ritzalam@gmail.com', 'parthik.modi10@gmail.com']
 
   spec.summary       = 'speech to text using different services'
   # spec.description   = %q{speech to text using google and ibm}
