@@ -46,4 +46,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'google-cloud-speech', '0.35.0'
   spec.add_dependency 'google-cloud-storage', '1.18.2'
   spec.add_dependency 'ibm_watson', '~> 0.18.2'
+  spec.add_dependency 'aws-sdk', '~> 3.1.0'
 end
