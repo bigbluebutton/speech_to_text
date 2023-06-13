@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,9 +23,10 @@ jobs:
 
       - name: Push gem
         env:
-          RUBYGEMS_API_KEY: ${{secrets.RUBYGEMS_API_KEY}}
+          GEM_HOST_API_KEY: ${{secrets.RUBYGEMS_API_KEY}}
         run: |
           pwd
           ls -la
+          # echo $${{secrets.RUBYGEMS_API_KEY}}
           filename=$(ls *.gem | head -n 1)
-          gem push "$filename"
+           gem push "$filename"
