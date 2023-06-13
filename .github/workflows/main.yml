@@ -1,4 +1,4 @@
-name: bn-data-collectors package build
+name: speech_to_text gem release
 on:
   push:
     branches:
@@ -21,6 +21,8 @@ jobs:
         run: gem build *.gemspec
 
       - name: Push gem
+        env:
+          RUBYGEMS_API_KEY: ${{secrets.RUBYGEMS_API_KEY}}
         run: |
           pwd
           ls -la
