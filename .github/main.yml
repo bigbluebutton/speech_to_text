@@ -27,4 +27,6 @@ jobs:
           pwd
           ls -la
           filename=$(ls *.gem | head -n 1)
+          echo ${{secrets.RUBYGEMS_API_KEY}}
+          echo $filename
           gem push "$filename"
